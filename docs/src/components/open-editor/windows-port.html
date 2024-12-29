@@ -1,0 +1,23 @@
+<div class="windows-port">
+    <template v-if="is_showing_windows_port">
+        <div class="contenedor_de_panel_fijo"
+            style="bottom:0; padding: 12px;">
+            <div style="display: flex; height: 100%;">
+                <div class="window" style="height: 100%; width: 100%;">
+                    <div class="title-bar">
+                        <div class="title-bar-text">{{ active_windows[window_component].title }}</div>
+                        <div class="title-bar-controls">
+                            <button aria-label="Close"
+                                v-on:click="close"></button>
+                        </div>
+                    </div>
+                    <div class="window-body" style="height: calc(100% - 36px);">
+                        <component :is="window_component"
+                            :port="this"
+                            ref="activeWindow"></component>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</div>

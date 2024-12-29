@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+    <title>Conductometria UI</title>
+</head>
+
+<body>
+
+    <style>
+        :root {
+            --intersitial-loader-height: 28px;
+            --intersitial-loader-bar-color-1: #1be339;
+            --intersitial-loader-bar-color-2: #03ff10;
+        }
+
+        #intersitial {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            font-family: Arial;
+            font-size: 12px;
+            background-color: #222;
+            color: white;
+            box-sizing: border-box;
+            padding: 12px;
+        }
+
+        #intersitial_loader {
+            position: relative;
+            font-family: Arial;
+            min-height: var(--intersitial-loader-height);
+            background-color: #000000;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+            /* Sombra interior */
+            border: 1px solid white;
+            border-right: 2px solid white;
+            border-radius: 4pt;
+            overflow: hidden;
+        }
+        
+        #intersitial_loader_bar {
+            height: 100%;
+            min-height: calc(var(--intersitial-loader-height) + 1px);
+            font-size: 12px;    
+            background-color: #0F0;
+            background: linear-gradient(to bottom,
+                var(--intersitial-loader-bar-color-1),
+                var(--intersitial-loader-bar-color-2) 40%,
+                var(--intersitial-loader-bar-color-2) 60%,
+                var(--intersitial-loader-bar-color-1) 100%);
+            box-shadow: inset 0 -2px 5px rgba(255, 255, 255, 0.3);
+            width: 0%;
+            transition: width .2s linear;
+        }
+
+        #intersitial_message {
+            position: absolute;
+            top: calc(calc(var(--intersitial-loader-height) / 4) + 2px);
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            color: gold: font-family: Arial;
+            font-size: 10px;
+            font-family: monospace;
+            border: 0px solid #888;
+            color: blue;
+            text-shadow: 0 0 1px blue;
+        }
+
+        #intersitial_modules_trace {
+            font-family: Arial;
+            font-size: 12px;
+            border: 0px solid #888;
+            margin: 0;
+            padding: 4px;
+            margin-bottom: 1px;
+        }
+
+        #intersitial,
+        #intersitial_modules_trace {
+            background-color: #222;
+            color: white;
+        }
+        @font-face {
+            font-family: "LinuxLibertine";
+            src: url("src/fonts/linux_libertine/LinLibertine_R.ttf");
+        }
+        #intersitial_overlayer_1 {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 10px;
+            right: 10px;
+            background-color: rgba(0,5,10,0.9);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            border-right: 1px solid white;
+            border-left: 1px solid white;
+            box-shadow: 0 0 4px white;
+        }
+        #intersitial_overlayer_1_box {
+            font-family: Arial, LinuxLibertine;
+            font-size: 18px;
+            background-color: rgba(255,0,0,0.2);
+            color: white;
+            padding: 20px;
+            border: 1px solid white;
+            border-radius: 4pt;
+            box-shadow: 0 0 3px red;
+            text-shadow: 0 0 1px white;
+            text-align: center;
+        }
+        #intersitial_overlayer_1_box a,
+        #intersitial_overlayer_1_box a:hover,
+        #intersitial_overlayer_1_box a:link,
+        #intersitial_overlayer_1_box a:active,
+        #intersitial_overlayer_1_box a:visited {
+            color: inherit;
+            text-decoration: none;
+        }
+        #intersitial_overlayer_title {
+        }
+        #intersitial_overlayer_pretitle {
+            margin-bottom: 12px;
+        }
+    </style>
+    <div id="app"></div>
+    <div id="intersitial">
+        
+        <pre id="intersitial_modules_trace"></pre>
+        <div id="intersitial_overlayer_1">
+            <span id="intersitial_overlayer_1_box">
+                <div id="intersitial_overlayer_pretitle"><a href="#">open-editor</a></div>
+                <div id="intersitial_overlayer_title">+ <a href="">conductometria-api</a></div>
+            </span>
+            <div style="padding: 4px;width:100%;">
+                <div id="intersitial_loader" style="">
+                    <div id="intersitial_loader_bar"></div>
+                    <div id="intersitial_message">
+                        <span>Loaded <span id="intersitial_modules_loaded"></span>/<span id="intersitial_modules_all"></span> modules</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="src/external/importer.js"></script>
+    <script src="src/index.js"></script>
+</body>
+
+</html>

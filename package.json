@@ -1,0 +1,17 @@
+{
+  "name": "conductometria",
+  "version": "1.0.1",
+  "description": "API para cálculos de conceptos, fenómenos, y propagaciones de estados.",
+  "main": "dist/conductometria.bundle.js",
+  "scripts": {
+    "up": "npm run build && npm run test && bash up.sh",
+    "build": "npx simplebundler --dir src --output dist/conductometria.bundle.js --id Conductometria && cp dist/conductometria.bundle.js docs/src/external/conductometria.bundle.js",
+    "test": "npm run build && node test.js"
+  },
+  "keywords": [],
+  "author": "allnulled",
+  "license": "WTFPL",
+  "directories": {
+    "doc": "docs"
+  }
+}

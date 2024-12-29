@@ -1,0 +1,78 @@
+.c-dialog {
+    
+}
+.c-dialog > dialog {
+    width: 100%;
+    height: 100%;
+    border: 0px solid #18181a;
+    background-color: transparent;
+    margin: 0px;
+    padding: 0px;
+}
+.c-dialog > dialog > .window_container{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+}
+.c-dialog > dialog > .window_container > .window_viewer {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+}
+.c-dialog > dialog > .window_container > .window_viewer > .window,
+.c-dialog > dialog > .window_container > .window_viewer > .window:before,
+.c-dialog > dialog > .window_container > .window_viewer > .window > .title-bar,
+.c-dialog > dialog > .window_container > .window_viewer > .window > .window-body,
+.c-dialog > dialog > .window_container > .window_viewer > .window > .status-bar {
+    background: transparent;
+    background-color: transparent;
+}
+.c-dialog > dialog > .window_container > .window_viewer > .window {
+    width: 100%;
+    height: 100%;
+}
+.c-dialog > dialog > .window_container > .window_viewer > .window {
+    background-color: #8888FF88;
+}
+.c-dialog > dialog > .window_container > .window_viewer > .window.modal {
+    background-color: #8888FFFF;
+}
+.c-dialog > dialog > .window_container > .window_viewer > .window > .window-body,
+.c-dialog > dialog > .window_container > .window_viewer > .window > .status-bar {
+    background-color: #FFFFFF90;
+}
+.c-dialog > dialog > .window_container > .window_viewer > .window.modal > .window-body,
+.c-dialog > dialog > .window_container > .window_viewer > .window.modal > .status-bar {
+    background-color: #FFFFFFFF;
+}
+.c-dialog button[aria-label="Close"] {
+    background: var(--control-background-close);
+}
+.c-dialog button[aria-label="Close"]:hover {
+    background: var(--control-background-close-hovered);
+}
+.c-dialog button[aria-label="Close"]:active {
+    background: var(--control-background-close-active);
+}
+.c-dialog > dialog > .window_container > .window_viewer > .window > .window-body {
+    height: calc(100% - 56px);
+    overflow: hidden;
+}
+.c-dialog button {
+    cursor: pointer;
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 0.4s ease;
+    opacity: 1;
+  }
+.fade-enter, .fade-leave-to {
+    transition: opacity 0s ease;
+    opacity: 0;
+}
+  

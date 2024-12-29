@@ -1,0 +1,63 @@
+.c-badge > badge {
+    width: 100%;
+    height: 100%;
+    border: 0px solid #18181a;
+    background-color: #72727900;
+    background-color: transparent;
+}
+.c-badge > badge > .window_container{
+    width: 100%;
+    height: 100%;
+}
+.c-badge > badge > .window_container > .window,
+.c-badge > badge > .window_container > .window:before,
+.c-badge > badge > .window_container > .window > .title-bar,
+.c-badge > badge > .window_container > .window > .window-body,
+.c-badge > badge > .window_container > .window > .status-bar {
+    background: transparent;
+    background-color: transparent;
+}
+.c-badge > badge > .window_container > .window {
+    width: 100%;
+    height: 100%;
+}
+.c-badge > badge > .window_container > .window {
+    background-color: #8888FF88;
+}
+.c-badge > badge > .window_container > .window.modal {
+    background-color: #8888FFFF;
+}
+.c-badge > badge > .window_container > .window > .window-body,
+.c-badge > badge > .window_container > .window > .status-bar {
+    background-color: #FFFFFF90;
+}
+.c-badge > badge > .window_container > .window.modal > .window-body,
+.c-badge > badge > .window_container > .window.modal > .status-bar {
+    background-color: #FFFFFFFF;
+}
+.c-badge button[aria-label="Close"] {
+    background: var(--control-background-close);
+}
+.c-badge button[aria-label="Close"]:hover {
+    background: var(--control-background-close-hovered);
+}
+.c-badge button[aria-label="Close"]:active {
+    background: var(--control-background-close-active);
+}
+.c-badge > badge > .window_container > .window > .window-body {
+    height: calc(100% - 56px);
+    overflow: hidden;
+}
+.c-badge button {
+    cursor: pointer;
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 0.4s ease;
+    opacity: 1;
+  }
+.fade-enter, .fade-leave-to {
+    transition: opacity 0s ease;
+    opacity: 0;
+}
+  

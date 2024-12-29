@@ -1,0 +1,23 @@
+{
+  "name": "litestarter-example",
+  "version": "1.0.0",
+  "main": "index.html",
+  "scripts": {
+    "build": "node bundle.js",
+    "create-component": "node create-component.js",
+    "serve": "npx http-server -c-1 . -o",
+    "reloader": "node reloader.js",
+    "up": "node bundle.js && cd .. && npm run up"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@allnulled/htmlbundler": "^1.0.3",
+    "@allnulled/vuebundler": "^1.0.0",
+    "chokidar": "^4.0.3",
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  }
+}

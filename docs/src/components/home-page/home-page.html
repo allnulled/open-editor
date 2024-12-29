@@ -1,0 +1,136 @@
+<div class="home-page">
+    <c-dialog ref="dialogo_1">
+        <template slot="title">Título del diálogo</template>
+        <template slot="body">
+            Cuerpo del diálogo
+        </template>
+        <template slot="bodyfooter">
+            <div style="text-align: right; padding: 4px;">
+                <button v-on:click="() => $refs.dialogo_1.set(true).close()">Aceptar</button>
+                <button v-on:click="() => $refs.dialogo_1.close()">Cancelar</button>
+            </div>
+        </template>
+        <!--template slot="footer">
+            <span class="status-bar-field">Pie del diálogo</span>
+        </template-->
+    </c-dialog>
+    <c-dialog ref="notificacion_1">
+        <template slot="title">Título del diálogo</template>
+        <template slot="body">
+            Cuerpo del diálogo
+        </template>
+        <template slot="bodyfooter">
+            <div style="text-align: right; padding: 4px;">
+                <button v-on:click="() => $refs.notificacion_1.set(true).close()">Aceptar</button>
+                <button v-on:click="() => $refs.notificacion_1.close()">Cancelar</button>
+            </div>
+        </template>
+        <!--template slot="footer">
+            <span class="status-bar-field">Pie del diálogo</span>
+        </template-->
+    </c-dialog>
+    <div class="wiki_viewer">
+        <div class="wiki_content">
+            <div class="wiki_title">
+                <span class="wiki_title_text">En Linux Libertine y en 21.8px</span>
+                <span class="wiki_title_controls">
+                    <button class="stretch_button"
+                        v-on:click="() => $refs.notificacion_1.open()">Notificación</button>
+                    <button class="stretch_button"
+                        v-on:click="() => $refs.dialogo_1.open()">Diálogo</button>
+                </span>
+            </div>
+            <!--
+        wiki_table_of_contents
+        wiki_article
+        wiki_table_of_details
+        -->
+            <div class="wiki_subtitle">
+                <span class="wiki_subtitle_text">En Linux Libertine y en 17px</span>
+                <span class="wiki_subtitle_controls">
+                    <button class="stretch_button"
+                        v-on:click="() => $refs.notificacion_1.open()">Notificación</button>
+                    <button class="stretch_button"
+                        v-on:click="() => $refs.dialogo_1.open()">Diálogo</button>
+                </span>
+            </div>
+            <div class="table_of_details">
+                <div class="title">Título del artículo</div>
+                <div class="image_container">
+                    <div class="image">Imagen no disponible.</div>
+                    <div class="image_footer">Título de la imagen.</div>
+                </div>
+                <table class="subtable_of_details">
+                    <thead>
+                        <tr>
+                            <td class="title" colspan="100">Título de la tabla</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="key">Propiedad:</td>
+                            <td class="value">Valor</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="wiki_paragraph">Texto normal, en Arial o Sans-Serif o algo.</div>
+            <div class="wiki_paragraph">Esto sería un <a href="#">hipervínculo</a> a algún recurso.</div>
+            <div class="wiki_paragraph">Esto sería una lista de elementos ordenados:</div>
+            <ol class="wiki_list">
+                <li>
+                    <div>Elemento 1:</div>
+                    <ol class="wiki_list">
+                        <li>Elemento 1.1</li>
+                        <li>Elemento 1.2</li>
+                        <li>Elemento 1.3</li>
+                    </ol>
+                </li>
+                <li>
+                    <div>Elemento 2:</div>
+                    <ol class="wiki_list">
+                        <li>Elemento 2.1</li>
+                        <li>Elemento 2.2</li>
+                        <li>Elemento 2.3</li>
+                    </ol>
+                </li>
+                <li>
+                    <div>Elemento 3:</div>
+                    <ol class="wiki_list">
+                        <li>Elemento 3.1</li>
+                        <li>Elemento 3.2</li>
+                        <li>Elemento 3.3</li>
+                    </ol>
+                </li>
+            </ol>
+            <div class="wiki_paragraph">Esto sería una lista de elementos desordenados:</div>
+            <ul class="wiki_list">
+                <li>
+                    <div>Elemento 1:</div>
+                    <ul class="wiki_list">
+                        <li>Elemento 1.1</li>
+                        <li>Elemento 1.2</li>
+                        <li>Elemento 1.3</li>
+                    </ul>
+                </li>
+                <li>
+                    <div>Elemento 2:</div>
+                    <ul class="wiki_list">
+                        <li>Elemento 2.1</li>
+                        <li>Elemento 2.2</li>
+                        <li>Elemento 2.3</li>
+                    </ul>
+                </li>
+                <li>
+                    <div>Elemento 3:</div>
+                    <ul class="wiki_list">
+                        <li>Elemento 3.1</li>
+                        <li>Elemento 3.2</li>
+                        <li>Elemento 3.3</li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="wiki_paragraph">Esto es un superíndice<a href="#"><sup>[123]</sup></a> y esto un subíndice <a href="#"><sub>[123]</sub></a></div>
+        </div>
+    </div>
+</div>

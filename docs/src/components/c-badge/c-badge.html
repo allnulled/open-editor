@@ -1,0 +1,38 @@
+<div class="c-badge">
+    <dialog class="window_badge">
+        <div class="window_container">
+            <transition name="fade">
+                <div class="window modal" v-if="is_active">
+                    <div class="title-bar">
+                        <div class="title-bar-text">
+                            <slot name="title"></slot>
+                        </div>
+                        <div class="title-bar-controls">
+                            <button aria-label="Close" v-on:click="() => set(undefined).close()"></button>
+                        </div>
+                    </div>
+                    <div class="window-body">
+                        <div style="display: flex; flex-direction: column; height: 100%;">
+                            <div style="flex: 100; overflow: scroll; padding: 4px 6px;">
+                                <slot name="body"></slot>
+                            </div>
+                            <div style="flex: 1;" v-if="$slots.bodyfooter">
+                                <slot name="bodyfooter"></slot>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="status-bar">
+                        <div class="status-bar-field">
+                            <template v-if="$slots.footer">
+                                <slot name="footer"></slot>
+                            </template>
+                            <template v-else>
+                                Powered by <a href="https://github.com/allnulled">allnulled</a>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+        </div>
+    </dialog>
+</div>
