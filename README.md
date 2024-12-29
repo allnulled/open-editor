@@ -61,11 +61,9 @@ Esta es una explicación de los ficheros en el directorio `docs` o raíz, según
 - `serve.sh`: starts an http server providing access to the application statically. Can run with `npm run serve`.
 - `index.html`: contiene la aplicación inicial. Normalmente pones la intersitial inicial.
 
-Luego tienes otro fichero especialmente destacable:
+### El fichero src/index.js
 
-- `src/index.js`
-
-Este fichero es clave para entender la arquitectura de dependencias de esta aplicación, que se basa en [@allnulled/importer](#):
+El fichero en `docs/src/index.js` es clave para entender la arquitectura de dependencias de esta aplicación, que se basa en [@allnulled/importer](#):
 
 ```js
 window.process = {
@@ -80,53 +78,58 @@ const main = async function () {
             if (process.env.NODE_ENV === "test") {
                 importer.setTotal(64);
                 importer.setTimeout(1000 * 2);
-                await Promise.all([
-                    importer.scriptSrc("src/external/socket.io-client.js"),
-                    importer.scriptSrc("src/external/beautifier.js"),
-                    importer.scriptSrc("src/external/vue-v2.js"),
-                    importer.scriptSrc("src/external/basic-logger.js"),
-                    importer.scriptSrc("src/external/ensure.js"),
-                    importer.scriptSrc("src/external/ufs.js"),
-                    importer.scriptSrc("src/external/store.unbundled.js"),
-                    importer.scriptSrc("src/external/browsie.js"),
-                    importer.scriptSrc("src/external/sql-wasm.js"),
-                    importer.scriptSrc("src/external/sqlite-polyfill.js"),
-                    importer.scriptSrc("src/external/sqlite-data-system.unbundled.js"),
-                    importer.scriptSrc("src/external/process-interface.js"),
-                    importer.scriptSrc("src/external/conductometria.bundle.js"),
-                ]);
-                await Promise.all([
-                    importer.scriptSrc("src/components/c-badges/c-badges.js"),
-                    importer.importVueComponent("src/components/c-dialogs/c-dialogs"),
-                    importer.importVueComponent("src/components/open-editor/windows-port"),
-                    importer.importVueComponent("src/components/open-editor/open-editor-iconset"),
-                    importer.importVueComponent("src/components/open-editor/open-editor"),
-                    importer.importVueComponent("src/components/c-title/c-title"),
-                    importer.importVueComponent("src/components/home-page/home-page"),
-                    importer.importVueComponent("src/components/app/app"),
-                    importer.importVueComponent("src/components/c-dialog/c-dialog"),
-                    importer.importVueComponent("src/components/c-badge/c-badge"),
-                ]);
-                ///////////////////////////////////////////////////////
-                await importer.importVueComponent("src/components/c-title/c-title");
-                await importer.importVueComponent("src/components/home-page/home-page");
-                await importer.importVueComponent("src/components/app/app");
-                ///////////////////////////////////////////////////////
-                await importer.linkStylesheet("src/components/home-page/wikipedia.css");
-                // await importer.linkStylesheet("src/external/wikipedia.css");
-                await importer.linkStylesheet("src/external/win7.css");
-                await importer.scriptSrc("src/external/refresher.js");
+                First_wave: {
+                    await Promise.all([
+                        importer.scriptSrc("src/external/socket.io-client.js"),
+                        importer.scriptSrc("src/external/beautifier.js"),
+                        importer.scriptSrc("src/external/vue-v2.js"),
+                        importer.scriptSrc("src/external/basic-logger.js"),
+                        importer.scriptSrc("src/external/ensure.js"),
+                        importer.scriptSrc("src/external/ufs.js"),
+                        importer.scriptSrc("src/external/store.unbundled.js"),
+                        importer.scriptSrc("src/external/browsie.js"),
+                        importer.scriptSrc("src/external/sql-wasm.js"),
+                        importer.scriptSrc("src/external/sqlite-polyfill.js"),
+                        importer.scriptSrc("src/external/sqlite-data-system.unbundled.js"),
+                        importer.scriptSrc("src/external/process-interface.js"),
+                        importer.scriptSrc("src/external/conductometria.bundle.js"),
+                    ]);
+                }
+                Second_wave: {
+                    await Promise.all([
+                        importer.scriptSrc("src/components/c-badges/c-badges.js"),
+                        importer.importVueComponent("src/components/c-dialogs/c-dialogs"),
+                        importer.importVueComponent("src/components/open-editor/windows-port"),
+                        importer.importVueComponent("src/components/open-editor/open-editor-iconset"),
+                        importer.importVueComponent("src/components/open-editor/open-editor"),
+                        importer.importVueComponent("src/components/c-title/c-title"),
+                        importer.importVueComponent("src/components/home-page/home-page"),
+                        importer.importVueComponent("src/components/app/app"),
+                        importer.importVueComponent("src/components/c-dialog/c-dialog"),
+                        importer.importVueComponent("src/components/c-badge/c-badge"),
+                    ]);
+                }
+                Third_synchronous_wave: {
+                    ///////////////////////////////////////////////////////
+                    await importer.linkStylesheet("src/components/home-page/wikipedia.css");
+                    await importer.linkStylesheet("src/external/win7.css");
+                    await importer.scriptSrc("src/external/refresher.js");
+                }
             } else if (process.env.NODE_ENV === "production") {
                 importer.setTotal(1);
                 importer.setTimeout(1000 * 1);
-                await importer.scriptSrc("dist/app.js");
-                await importer.linkStylesheet("dist/app.css");
+                In_production_only_app_js_and_css: {
+                    await importer.scriptSrc("dist/app.js");
+                    await importer.linkStylesheet("dist/app.css");
+                }
             } else {
                 importer.setTotal(2);
                 importer.setTimeout(1000 * 1);
-                await importer.scriptSrc("dist/app.js");
-                await importer.linkStylesheet("dist/app.css");
-                await importer.scriptSrc("src/external/refresher.js");
+                In_others_we_add_the_refresher: {
+                    await importer.scriptSrc("dist/app.js");
+                    await importer.linkStylesheet("dist/app.css");
+                    await importer.scriptSrc("src/external/refresher.js");
+                }
             }
         }
         Create_app: {
@@ -167,24 +170,28 @@ const main = async function () {
 window.addEventListener("load", main);
 ```
 
-## Uso
+Los ficheros se cargan por olas, cada ola espera a que acabe la anterior, porque los de la siguiente tienen dependencias con los de la anterior.
 
-El tes
+Con [@allnulled/importer](https://github.com/allnulled/importer) tenemos una serie de métodos para incluir en cualquier momento ficheros de lógica, de estilos o de texto.
+
+### Inyección de dependencias
+
+Otro punto interesante de este mismo fichero, el `docs/src/index.js`, es que hace la inyección de dependencias global. Las inyecta a `Vue.prototype.$*` y de esta forma están accesibles desde cualquier punto de la aplicación. Está todo ahí, en el código fuente de arriba.
 
 ## Tips para el editor en línea
 
 - No tengo nada para mostrar la consola de momento.
-- El `this` es el componente `open-editor` que es un proyecto no documentado todavía xD pero que está usándose en otros proyectos
 - Desde el `this` puedes acceder a las APIs inyectadas vía `Vue.prototype.$*`:
 - Usa el `await this.$ufs.require(file)` para importar ficheros del sistema de fichero simulado.
    - No hay ni `module.exports` ni `require`, pero puedes tirar con eso.
-- Puedes acceder a `Conductometria` desde cualquier fichero.
+
+A continuación se explican cosas sobre cómo el editor permite que uses las APIs de JavaScript creando ficheros `.js` y dándole al botón de «Run».
 
 ### 1. ¿Cómo crear procesos de ventana?
 
 Esto es un ejemplo de cómo crear un proceso de ventana:
 
-La API de `src/components/open-editor/windows-port.js` se encarga de dejarte poder hacer:
+La API de `src/components/open-editor/windows-port.js` se encarga de dejarte poder hacer, desde el editor mismo y luego «Run»:
 
 ```js
 await this.$windowsPort.createWindow("Hello, window!", `
@@ -310,69 +317,9 @@ Los procesos de ventana son diálogos también HTML5/Vue.js v2 pero funcionan di
 
 La ventaja de los procesos de ventana es que su gestión puede supervisarse posteriormente. Cualquiera puede echar un `setTimeout` desde cualquier lugar y luego venga, busca. Pero de hacerlo bien, centralizamos la fábrica y proxificamos el producto.
 
-### 5. ¿Qué otras APIs hay disponibles?
+## Comandos
 
-En esta parte del `src/index.js` hacemos la `global dependency injection`:
-
-```js
-Create_app: {
-    const processInterface = new ProcessInterface();
-    const processManager = new processInterface.ProcessManager();
-    Vue.prototype.$process = {};
-    Vue.prototype.$process.interface = processInterface;
-    Vue.prototype.$process.manager = processManager;
-    Vue.prototype.$vue = Vue;
-    Vue.prototype.$dialogs = undefined;
-    Vue.prototype.$ufs = undefined;
-    Vue.prototype.$logger = BasicLogger.create("app", { trace: true });
-    Vue.prototype.$window = window;
-    Vue.prototype.$importer = importer;
-    Vue.prototype.$socketio = io;
-    Vue.prototype.$fetch = fetch;
-    Vue.prototype.$ensure = ensure;
-    Vue.prototype.$store = UniversalStore.create();
-    Conflictive_point: {
-        // Vue.prototype.$sqlite = new SQLitePolyfill("litestarter.main.db", "src/external/sql-wasm.wasm");
-        // await Vue.prototype.$sqlite.init("litestarter.main.db", "src/external/sql-wasm.wasm");
-        const dataSystem = SqliteDataSystem.create();
-        Vue.prototype.$db = dataSystem.db;
-        Vue.prototype.$auth = dataSystem.auth;
-        Vue.prototype.$rest = dataSystem.rest;
-        Vue.prototype.$ajax = fetch;
-        await Vue.prototype.$db.init("litestarter.main.db", "src/external/sql-wasm.wasm");
-    }
-    const app = new Vue({
-        render: h => h(Vue.options.components.app),
-    }).$mount("#app");
-}
-```
-
-Estaríamos metiendo todas estas APIs de proyectos externos:
-
-- `@allnulled/basic-logger`: en [`Vue.prototype.$logger`](https://github.com/allnulled/basic-logger/)
-- `@allnulled/browsie`: en [`Vue.prototype.$browsie`](https://github.com/allnulled/browsie)
-- `@allnulled/conductometria-api`: en [`window.Conductometria`](https://github.com/allnulled/conductometria-api)
-- `@allnulled/ensure`: en [`Vue.prototype.$ensure`](https://github.com/allnulled/ensure)
-- `@allnulled/importer`: en [`Vue.prototype.$importer`](https://github.com/allnulled/importer)
-- `@allnulled/process-interface`: en [`Vue.prototype.$process`](https://github.com/allnulled/process-interface/)
-- `@allnulled/universal-file-system`: en [`Vue.prototype.$ufs`](https://github.com/allnulled/universal-file-system)
-- `@allnulled/universal-store`: en [`Vue.prototype.$store`](https://github.com/allnulled/universal-store)
-- `@allnulled/sqlite-data-system`: en [`Vue.prototype.$db`](https://github.com/allnulled/sqlite-data-system), [`Vue.prototype.$auth`](https://github.com/allnulled/sqlite-data-system) y [`Vue.prototype.$rest`](https://github.com/allnulled/sqlite-data-system)
-
-E incluyendo algunas co ellos, como:
-
-- [`sql.js`](https://sql.js.org/#/) con: `sql-wasm.js` con su `sql-wasm.wasm`
-- [`beautifier.js`](https://github.com/beautifier/js-beautify?tab=readme-ov-file#web-library-1) con: `sql-wasm.js` con su `sql-wasm.wasm`
-
-Y también incluyendo componentes Vue.js v2. Ah, y [Vue.js v2](https://v2.vuejs.org/v2/guide/). Sí, este sitio es muy importante si quieres usar esto:
-
-- [https://v2.vuejs.org/v2/guide/](https://v2.vuejs.org/v2/guide/)
-
-También puedes sobreentender que estaremos usando estilos de tipo `windows-7`, un clásico tonificante:
-
-- [https://khang-nd.github.io/7.css/](https://khang-nd.github.io/7.css/)
-
-### 6. ¿Qué comandos puedo usar en el proyecto?
+### 1. ¿Qué comandos puedo usar en el proyecto?
 
 En el `package.json` ahora mismo se definen estos:
 
