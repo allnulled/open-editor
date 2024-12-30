@@ -6,4 +6,5 @@ module.exports = [
   __dirname + "/src/components/home-page/home-page",
   __dirname + "/src/components/open-editor/open-editor",
   __dirname + "/src/components/open-editor/open-editor-iconset",
+  __dirname + "/src/components/open-editor/windows-port",
 ]

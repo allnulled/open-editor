@@ -1345,4 +1345,113 @@ Vue.component("open-editor-iconset", {
 
   }
 });
+Vue.component("windows-port", {
+  name: "windows-port",
+  template: `<div class="windows-port">
+    <template v-if="is_showing_windows_port">
+        <div class="contenedor_de_panel_fijo"
+            style="bottom:0; padding: 12px;">
+            <div style="display: flex; height: 100%;">
+                <div class="window" style="height: 100%; width: 100%;">
+                    <div class="title-bar">
+                        <div class="title-bar-text">{{ active_windows[window_component].title }}</div>
+                        <div class="title-bar-controls">
+                            <button aria-label="Close"
+                                v-on:click="close"></button>
+                        </div>
+                    </div>
+                    <div class="window-body" style="height: calc(100% - 36px); overflow: scroll;">
+                        <component :is="window_component"
+                            :port="this"
+                            ref="activeWindow"></component>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</div>`,
+  props: {
+    
+  },
+  data() {
+    return {
+      alphabet: "abcdefghijklmnopqrstuvwxyz".split(""),
+      is_showing_windows_port: false,
+      window_component: undefined,
+      active_windows: {},
+    }
+  },
+  methods: {
+    _generateId(len = 30) {
+      let id = "";
+      while (id.length < len) {
+        id += this.alphabet[Math.floor(Math.random() * this.alphabet.length)];
+      }
+      return id;
+    },
+    createWindow(title, template, generator) {
+      this.$ensure({ title }).type("string");
+      this.$ensure({ template }).type("string");
+      if(typeof generator === "undefined") {
+        generator = function() {
+          return {
+            data() {
+              return {};
+            }
+          };
+        };
+      }
+      this.$ensure({ generator }).type("function");
+      this.is_showing_windows_port = false;
+      const componentDef = generator(this);
+      const name = "window-port-" + this._generateId(10);
+      Object.assign(componentDef, { name, template });
+      this.$vue.component(name, componentDef);
+      this.window_component = name;
+      this.is_showing_windows_port = true;
+      const processObject = this.$process.manager.createProcess({
+        name,
+        title,
+        component: this.$refs.activeWindow,
+        createdAt: new Date()
+      });
+      this.active_windows[name] = {
+        title: title,
+        component: this.$refs.activeWindow,
+        process: processObject
+      };
+      return {
+        name,
+        title,
+        process: processObject,
+        close() {
+          delete this.active_windows[name];
+        }
+      };
+    },
+    closeWindow(name) {
+      const activeWindow = this.active_windows[name];
+      if(activeWindow) {
+        try {
+          activeWindow.process.close();
+        } catch (error) {
+          console.log(error);
+        }
+        delete this.active_windows[name];
+      }
+    },
+    close() {
+      this.closeWindow(this.window_component);
+      this.is_showing_windows_port = false;
+    }
+  },
+  mounted() {
+    this.$logger.trace("mounted", arguments);
+    this.$vue.prototype.$windowsPort = this;
+  },
+  unmounted() {
+    this.$logger.trace("unmounted", arguments);
+
+  }
+});
 });
