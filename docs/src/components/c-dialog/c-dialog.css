@@ -61,7 +61,7 @@
 }
 .c-dialog > dialog > .window_container > .window_viewer > .window > .window-body {
     height: calc(100% - 56px);
-    overflow: hidden;
+    
 }
 .c-dialog button {
     cursor: pointer;

@@ -12,5 +12,6 @@ module.exports = [
   __dirname + "/src/external/sqlite-data-system.unbundled.js",
   __dirname + "/src/external/process-interface.js",
   __dirname + "/src/external/marked.js",
+  __dirname + "/src/external/html2pdf.bundle.js",
   __dirname + "/dist/components.js",
 ]

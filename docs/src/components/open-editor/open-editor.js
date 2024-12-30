@@ -237,13 +237,37 @@ Vue.component("open-editor", {
     },
     async visualizar_fichero_actual() {
       try {
+        const wrapWindowCode = function(contenidoHtml) {
+          return `<div>
+            <div style="display: flex; flex-direction: column; height: 100%;">
+                <div style="flex: 100; overflow: scroll; padding: 4px 6px;" ref="contents">
+                  ${contenidoHtml}
+                </div>
+                <div style="position: absolute; bottom: 10px; left: auto; right: 9px;">
+                    <button v-on:click="pdfy">Descargar PDF</button>
+                    <button v-on:click="() => $windowsPort.close()">Cancelar</button>
+                </div>
+            </div>
+          </div>`;
+        }
+        const generadorDialogo = function() {
+          return {
+            methods: {
+              pdfy() {
+                this.$pdf.save(this.$refs.contents);
+              }
+            }
+          }
+        };
         if (this.nodo_actual.endsWith(".md")) {
           const contenidoMd = this.nodo_actual_contenido_de_fichero;
           const contenidoHtml = this.$markdown.parse(contenidoMd);
-          await this.$windowsPort.createWindow("Visualización de markdown", `<div>${contenidoHtml}</div>`);
+          const contenidoDialogo = wrapWindowCode(contenidoHtml);
+          await this.$windowsPort.createWindow("Visualización de markdown", contenidoDialogo, generadorDialogo);
         } else if (this.nodo_actual.endsWith(".html")) {
           const contenidoHtml = this.nodo_actual_contenido_de_fichero;
-          await this.$windowsPort.createWindow("Visualización de html", `<div>${contenidoHtml}</div>`);
+          const contenidoDialogo = wrapWindowCode(contenidoHtml);
+          await this.$windowsPort.createWindow("Visualización de html", contenidoDialogo, generadorDialogo);
         }
       } catch (error) {
         this.gestionar_error(error, true);

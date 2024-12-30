@@ -72,11 +72,13 @@ window.process = {
         NODE_ENV: (window.location.href.startsWith("https") ? "production" : "test")
     }
 };
+// process.env.NODE_ENV = "production";
 const main = async function () {
     try {
         Import_scripts: {
             if (process.env.NODE_ENV === "test") {
-                importer.setTotal(64);
+                // importer.setTotal(64);
+                importer.setTotal(54);
                 importer.setTimeout(1000 * 2);
                 First_wave: {
                     await Promise.all([
@@ -92,6 +94,8 @@ const main = async function () {
                         importer.scriptSrc("src/external/sqlite-polyfill.js"),
                         importer.scriptSrc("src/external/sqlite-data-system.unbundled.js"),
                         importer.scriptSrc("src/external/process-interface.js"),
+                        importer.scriptSrc("src/external/marked.js"),
+                        importer.scriptSrc("src/external/html2pdf.bundle.js"),
                         importer.scriptSrc("src/external/conductometria.bundle.js"),
                     ]);
                 }
@@ -139,6 +143,8 @@ const main = async function () {
             Vue.prototype.$process.interface = processInterface;
             Vue.prototype.$process.manager = processManager;
             Vue.prototype.$vue = Vue;
+            Vue.prototype.$markdown = marked;
+            Vue.prototype.$pdf = { save: html2pdf };
             Vue.prototype.$dialogs = undefined;
             Vue.prototype.$ufs = undefined;
             Vue.prototype.$logger = BasicLogger.create("app", { trace: true });
@@ -414,3 +420,10 @@ Por tanto, podemos decir que el editor ofrece cierto soporte para ficheros:
   - css
   - js
   - md
+
+Otras features más avanzadas:
+
+ - puedes crear flujos de diálogo con await muy directo
+ - puedes crear componentes html con vue.js v2 muy directo
+ - puedes visualizar código markdown, html o vue.js en un diálogo
+ - puedes convertir código markdown, html o vue.js en formato PDF
