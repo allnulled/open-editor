@@ -29,7 +29,7 @@
                     <template v-if="nodo_actual !== '/'">
                         <div class="icono_contextual fondo_verde"
                             title="Copiar fichero o directorio"
-                            v-on:click="copiar_fichero">
+                            v-on:click="copiar_fichero_o_directorio">
                             Copy
                         </div>
                     </template>
@@ -48,6 +48,16 @@
                             title="Eliminar"
                             v-on:click="() => eliminar_fichero_actual()">
                             Delete
+                        </div>
+                        <div class="icono_contextual fondo_rojo"
+                            title="Exportar como URL"
+                            v-on:click="exportar_como_url">
+                            Link
+                        </div>
+                        <div class="icono_contextual fondo_azul"
+                            title="Descargar como fichero"
+                            v-on:click="descargar_fichero">
+                            Get
                         </div>
                     </template>
                 </div>
@@ -145,11 +155,6 @@
                             ref="serie_iconos_derechos"
                             :iconos-predefinidos="iconos_derechos"
                             identificador-de-contexto="derechos" />
-                        <div class="icono_contextual fondo_rojo"
-                            title="Exportar como URL"
-                            v-on:click="exportar_como_url">
-                            Link
-                        </div>
                     </template>
                     <template v-if="nodo_actual_es_directorio">
                         <div class="icono_contextual fondo_azul"

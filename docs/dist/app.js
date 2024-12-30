@@ -63654,7 +63654,7 @@ Vue.component("open-editor", {
                     <template v-if="nodo_actual !== '/'">
                         <div class="icono_contextual fondo_verde"
                             title="Copiar fichero o directorio"
-                            v-on:click="copiar_fichero">
+                            v-on:click="copiar_fichero_o_directorio">
                             Copy
                         </div>
                     </template>
@@ -63673,6 +63673,16 @@ Vue.component("open-editor", {
                             title="Eliminar"
                             v-on:click="() => eliminar_fichero_actual()">
                             Delete
+                        </div>
+                        <div class="icono_contextual fondo_rojo"
+                            title="Exportar como URL"
+                            v-on:click="exportar_como_url">
+                            Link
+                        </div>
+                        <div class="icono_contextual fondo_azul"
+                            title="Descargar como fichero"
+                            v-on:click="descargar_fichero">
+                            Get
                         </div>
                     </template>
                 </div>
@@ -63770,11 +63780,6 @@ Vue.component("open-editor", {
                             ref="serie_iconos_derechos"
                             :iconos-predefinidos="iconos_derechos"
                             identificador-de-contexto="derechos" />
-                        <div class="icono_contextual fondo_rojo"
-                            title="Exportar como URL"
-                            v-on:click="exportar_como_url">
-                            Link
-                        </div>
                     </template>
                     <template v-if="nodo_actual_es_directorio">
                         <div class="icono_contextual fondo_azul"
@@ -64064,7 +64069,7 @@ Vue.component("open-editor", {
     },
     async visualizar_fichero_actual() {
       try {
-        const wrapWindowCode = function(contenidoHtml) {
+        const wrapWindowCode = function (contenidoHtml) {
           return `<div>
             <div style="display: flex; flex-direction: column; height: 100%;">
                 <div style="flex: 100; overflow: scroll; padding: 4px 6px;" ref="contents">
@@ -64077,7 +64082,7 @@ Vue.component("open-editor", {
             </div>
           </div>`;
         }
-        const generadorDialogo = function() {
+        const generadorDialogo = function () {
           return {
             methods: {
               pdfy() {
@@ -64217,23 +64222,51 @@ Vue.component("open-editor", {
         this.gestionar_error(error);
       }
     },
-    async copiar_fichero() {
+    async copiar_fichero_o_directorio() {
       try {
-        console.log("copiar_fichero");
-        const nueva_ruta = await this.$dialogs.pedir_texto({
-          titulo: "Copiar fichero a otra ruta",
-          pregunta: "Escribe la ruta a donde quieres copiar el fichero:"
-        });
-        if (!nueva_ruta) {
-          return;
+        console.log("copiar_fichero_o_directorio");
+        if(this.nodo_actual_es_fichero) {
+          // Si es fichero:
+          const nueva_ruta = await this.$dialogs.pedir_texto({
+            titulo: "Copiar fichero a otro directorio",
+            pregunta: "Escribe la ruta completa a donde quieres copiar el fichero. Debe existir el directorio:"
+          });
+          if (!nueva_ruta) {
+            return;
+          }
+          await this.$ufs.write_file(nueva_ruta, this.nodo_actual_contenido_de_fichero);
+        } else if(this.nodo_actual_es_directorio) {
+          // Si es directorio:
+          const nueva_ruta = await this.$dialogs.pedir_texto({
+            titulo: "Copiar directorio a otro directorio",
+            pregunta: "Escribe la ruta completa a donde quieres copiar el directorio. Debe existir el directorio anterior:"
+          });
+          if (!nueva_ruta) {
+            return;
+          }
+          await this.$ufs.operate_on_node(nueva_ruta, (pivote, prop) => {
+            return pivote[prop] = this.nodo_actual_subnodos;
+          });
         }
-        await this.$ufs.write_file(nueva_ruta, this.nodo_actual_contenido_de_fichero);
       } catch (error) {
         this.gestionar_error(error);
       }
     },
     mostrar_mensaje_de_consola(...args) {
       this.console_logs.push(...args);
+    },
+    downloadTextFile(filename, content) {
+      const blob = new Blob([content], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+    },
+    async descargar_fichero() {
+      this.downloadTextFile(this.nodo_actual.split("/").pop(), this.nodo_actual_contenido_de_fichero);
     },
     async exportar_directorio_como_json() {
       console.log("exportar_directorio_como_json");
@@ -64251,7 +64284,7 @@ Vue.component("open-editor", {
             </div>
           </div>
         `,
-        datos: function() {
+        datos: function () {
           return {
             codigo
           };
@@ -64291,7 +64324,7 @@ Vue.component("open-editor", {
             </div>
           </div>
         `,
-        datos: function() {
+        datos: function () {
           return {
             paso: 1,
             texto_a_importar: "",
