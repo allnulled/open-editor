@@ -1,14 +1,14 @@
 {
-  "name": "conductometria",
+  "name": "open-editor",
   "version": "1.0.1",
-  "description": "API para cálculos de conceptos, fenómenos, y propagaciones de estados.",
-  "main": "dist/conductometria.bundle.js",
+  "description": "Editor de código abierto para todos los dispositivos y tecnologías web",
+  "main": "docs/index.html",
   "scripts": {
+    "build": "echo 'no building process here, in docs'",
     "up": "npm run build && npm run test && bash up.sh",
-    "build": "npx simplebundler --dir src --output dist/conductometria.bundle.js --id Conductometria && cp dist/conductometria.bundle.js docs/src/external/conductometria.bundle.js",
-    "test": "npm run build && node test.js"
+    "test": "echo 'no test'"
   },
-  "keywords": [],
+  "keywords": ["editor", "html", "js", "css", "web", "cross-device", "cross-platform", "javascript", "open", "source"],
   "author": "allnulled",
   "license": "WTFPL",
   "directories": {

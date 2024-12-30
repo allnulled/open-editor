@@ -170,7 +170,7 @@ const main = async function () {
 window.addEventListener("load", main);
 ```
 
-Los ficheros se cargan por olas, cada ola espera a que acabe la anterior, porque los de la siguiente tienen dependencias con los de la anterior.
+Los ficheros se cargan por olas, cada ola espera a que acabe la anterior, porque los de la siguiente tienen dependencias con los de la anterior, o quieren sobreescribir lo anterior al menos.
 
 Con [@allnulled/importer](https://github.com/allnulled/importer) tenemos una serie de métodos para incluir en cualquier momento ficheros de lógica, de estilos o de texto.
 

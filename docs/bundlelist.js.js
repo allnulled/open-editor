@@ -11,6 +11,5 @@ module.exports = [
   __dirname + "/src/external/sqlite-polyfill.js",
   __dirname + "/src/external/sqlite-data-system.unbundled.js",
   __dirname + "/src/external/process-interface.js",
-  __dirname + "/src/external/conductometria.bundle.js",
   __dirname + "/dist/components.js",
 ]

@@ -8,7 +8,8 @@ const main = async function () {
     try {
         Import_scripts: {
             if (process.env.NODE_ENV === "test") {
-                importer.setTotal(64);
+                // importer.setTotal(64);
+                importer.setTotal(52);
                 importer.setTimeout(1000 * 2);
                 First_wave: {
                     await Promise.all([

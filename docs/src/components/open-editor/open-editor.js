@@ -22,15 +22,25 @@ Vue.component("open-editor", {
   methods: {
     registrar_evento_de_redimensionar() {
       console.log("registrar_evento_de_redimensionar");
-      window.addEventListener("resize", this.evento_de_redimensionar);
+      //window.addEventListener("resize", this.evento_de_redimensionar);
+      window.addEventListener('resize', this.evento_de_redimensionar);
     },
     desregistrar_evento_de_redimensionar() {
       console.log("desregistrar_evento_de_redimensionar");
+      //window.removeEventListener("resize", this.evento_de_redimensionar);
       window.removeEventListener("resize", this.evento_de_redimensionar);
     },
     evento_de_redimensionar() {
       console.log("evento_de_redimensionar");
-      this.$refs.panel_medio.style.height = (window.innerHeight - (40 * 2)) + "px";
+      const window = this.$window;
+      const windowBetterHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      const isKeyboardOpen = windowBetterHeight < screen.height; // Ajusta el umbral si es necesario
+      const fixedBottom = this.$refs.panel_medio;
+      if (isKeyboardOpen) {
+        fixedBottom.style.height = `${windowBetterHeight - (40 * 2)}px`;
+      } else {
+        fixedBottom.style.height = '0';
+      }
     },
     lose_focus_from_editor() {
       console.log("lose_focus_from_editor");
@@ -379,12 +389,12 @@ Vue.component("open-editor", {
       console.log("mounted");
       Vue.prototype.$ufs = UFS_manager.create();
       Vue.prototype.$ufs.require = (path, parameters = []) => {
-          const filepath = Vue.prototype.$ufs.resolve_path(path);
-          const filecontents = Vue.prototype.$ufs.read_file(filepath);
-          const asyncExample = async function () { };
-          const AsyncFunction = asyncExample.constructor;
-          const filedata = new AsyncFunction(filecontents);
-          return filedata.call(this, ...parameters);
+        const filepath = Vue.prototype.$ufs.resolve_path(path);
+        const filecontents = Vue.prototype.$ufs.read_file(filepath);
+        const asyncExample = async function () { };
+        const AsyncFunction = asyncExample.constructor;
+        const filedata = new AsyncFunction(filecontents);
+        return filedata.call(this, ...parameters);
       };
       this.$window.inicio = this;
       this.registrar_evento_de_redimensionar();

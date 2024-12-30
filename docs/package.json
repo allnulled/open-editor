@@ -1,5 +1,5 @@
 {
-  "name": "litestarter-example",
+  "name": "open-editor-app",
   "version": "1.0.0",
   "main": "index.html",
   "scripts": {
@@ -10,8 +10,8 @@
     "up": "node bundle.js && cd .. && npm run up"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "allnulled",
+  "license": "WTFPL",
   "description": "",
   "dependencies": {
     "@allnulled/htmlbundler": "^1.0.3",

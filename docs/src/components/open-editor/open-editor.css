@@ -6,6 +6,7 @@
     right: 1px;
     /* PIXEL PERFECTION =D */
     bottom: 0;
+    bottom: env(safe-area-inset-bottom);
 }
 
 .open-editor .panel_fijo {
