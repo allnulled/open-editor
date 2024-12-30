@@ -40,17 +40,21 @@ Vue.component("windows-port", {
       this.$vue.component(name, componentDef);
       this.window_component = name;
       this.is_showing_windows_port = true;
+      const processObject = this.$process.manager.createProcess({
+        name,
+        title,
+        component: this.$refs.activeWindow,
+        createdAt: new Date()
+      });
       this.active_windows[name] = {
         title: title,
         component: this.$refs.activeWindow,
-        process: this.$process.manager.createProcess({
-          name,
-          title,
-          component: this.$refs.activeWindow,
-          createdAt: new Date()
-        })
+        process: processObject
       };
       return {
+        name,
+        title,
+        process: processObject,
         close() {
           delete this.active_windows[name];
         }

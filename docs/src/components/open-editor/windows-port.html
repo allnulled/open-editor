@@ -11,7 +11,7 @@
                                 v-on:click="close"></button>
                         </div>
                     </div>
-                    <div class="window-body" style="height: calc(100% - 36px);">
+                    <div class="window-body" style="height: calc(100% - 36px); overflow: scroll;">
                         <component :is="window_component"
                             :port="this"
                             ref="activeWindow"></component>

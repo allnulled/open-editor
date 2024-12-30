@@ -388,3 +388,29 @@ La otra API inyectada, ésta desde `src/components/open-editor/windows-port.js` 
 
 Inyecta `Vue.prototype.$windowsPort` globalmente en el `mounted`. Y desde aquí podemos tirar un **proceso de ventana** o **WindowProcess**.
 
+## Funcionalidades del editor
+
+Con el editor puedes, de forma relativamente intuitiva:
+
+ - navegar por el árbol de ficheros
+ - crear un fichero: botón «File++»
+ - crear un directorio: botón «Dir++»
+ - abrir un fichero: botón del nombre del fichero
+ - guardar un fichero: botón «Save»
+ - cargar un fichero: botón «Load»
+ - renombrar un fichero: botón «Rename»
+ - copiar un fichero a otro directorio: botón «Copy»
+ - ejecutar un fichero: botón «Run». Solo funciona con los ficheros: *.js.
+ - compilar un fichero: botón «Compile». Solo funciona con los ficheros: *.md los pasa a *.html.
+ - visualizar un fichero: botón «View». Solo funciona con los ficheros: *.md y *.html.
+ - formatear un fichero: botón «Format». Solo funciona con los ficheros: *.html, *.css y *.js.
+ - incrementar tamaño de fuente: botón «Font++».
+ - decrementar tamaño de fuente: botón «Font--».
+ - cambiar estilo de fuente: botón «Font».
+ - exportar un fichero a URL: botón «Export».
+
+Por tanto, podemos decir que el editor ofrece cierto soporte para ficheros:
+  - html
+  - css
+  - js
+  - md

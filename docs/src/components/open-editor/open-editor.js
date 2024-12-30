@@ -225,7 +225,26 @@ Vue.component("open-editor", {
     async compilar_fichero_actual() {
       try {
         console.log("compilar_fichero_actual");
-        // @TODO...
+        if (this.nodo_actual.endsWith(".md")) {
+          const contenidoMd = this.nodo_actual_contenido_de_fichero;
+          const contenidoHtml = this.$markdown.parse(contenidoMd);
+          const ficheroHtml = this.nodo_actual.replace(/\.md$/g, ".html");
+          this.$ufs.write_file(ficheroHtml, contenidoHtml);
+        }
+      } catch (error) {
+        this.gestionar_error(error, true);
+      }
+    },
+    async visualizar_fichero_actual() {
+      try {
+        if (this.nodo_actual.endsWith(".md")) {
+          const contenidoMd = this.nodo_actual_contenido_de_fichero;
+          const contenidoHtml = this.$markdown.parse(contenidoMd);
+          await this.$windowsPort.createWindow("Visualización de markdown", `<div>${contenidoHtml}</div>`);
+        } else if (this.nodo_actual.endsWith(".html")) {
+          const contenidoHtml = this.nodo_actual_contenido_de_fichero;
+          await this.$windowsPort.createWindow("Visualización de html", `<div>${contenidoHtml}</div>`);
+        }
       } catch (error) {
         this.gestionar_error(error, true);
       }
