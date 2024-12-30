@@ -384,7 +384,7 @@ Vue.component("open-editor", {
         const recurso_directo = this.nodo_actual_contenido_de_fichero;
         params.set("recurso_directo", recurso_directo);
         this.$dialogs.dialogo_de_notificacion_titulo = "Exportar script como URL";
-        this.$dialogs.dialogo_de_notificacion_enunciado = "https://allnulled.github.io/universal-programming-language/editor?" + params.toString();
+        this.$dialogs.dialogo_de_notificacion_enunciado = "https://allnulled.github.io/open-editor/index.html?" + params.toString();
         await this.$dialogs.abrir("dialogo_de_exportar_script_como_url");
       } catch (error) {
         this.gestionar_error(error);
@@ -407,7 +407,91 @@ Vue.component("open-editor", {
     },
     mostrar_mensaje_de_consola(...args) {
       this.console_logs.push(...args);
-    }
+    },
+    async exportar_directorio_como_json() {
+      console.log("exportar_directorio_como_json");
+      const codigo = JSON.stringify(this.$ufs.read_directory(this.nodo_actual), null, 2);
+      await this.$dialogs.personalizado({
+        titulo: "Exportar directorio como JSON",
+        plantilla: `
+          <div>
+          <div style="padding: 4px;">
+              <pre style="margin: 0px; margin-bottom: 4px; padding: 8px; overflow: scroll;">{{ codigo }}</pre>
+              <div style="text-align: right;">
+                <button v-on:click="() => copyToClipboard()">Copiar texto</button>
+                <button v-on:click="() => cerrar()">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        datos: function() {
+          return {
+            codigo
+          };
+        },
+        metodos: {
+          copyToClipboard() {
+            this.$window.navigator.clipboard.writeText(this.codigo);
+          }
+        }
+      });
+    },
+    async importar_directorio_como_json() {
+      console.log("importar_directorio_como_json");
+      const editor = this;
+      const directorio_actual = this.nodo_actual;
+      await this.$dialogs.personalizado({
+        titulo: "Importar directorio como JSON",
+        plantilla: `
+          <div>
+            <div style="padding: 4px;" v-if="paso === 1">
+              <div style="padding: 12px;">¡Cuidado! ¡Esta operación eliminará absolutamente todos los nodos que haya en el directorio actualmente!</div>
+              <div style="text-align: right;">
+                <button v-on:click="() => seguir()">Continuar</button>
+                <button v-on:click="() => cerrar()">Cancelar</button>
+              </div>
+            </div>
+            <div style="padding: 4px;" v-if="paso === 2">
+              <textarea style="width:100%;min-height:230px;" v-model="texto_a_importar" />
+              <div v-if="error">
+                <div>Error: {{ error }}</div>
+                <button v-on:click="limpiar_error">Aceptar</button>
+              </div>
+              <div style="text-align: right;">
+                <button v-on:click="() => importar()">Importar</button>
+                <button v-on:click="() => cerrar()">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        `,
+        datos: function() {
+          return {
+            paso: 1,
+            texto_a_importar: "",
+            error: undefined
+          };
+        },
+        metodos: {
+          volver() {
+            this.paso--;
+          },
+          seguir() {
+            this.paso++;
+          },
+          limpiar_error() {
+            this.error = undefined;
+          },
+          importar() {
+            const importacion = JSON.parse(this.texto_a_importar);
+            this.$ufs.operate_on_node(directorio_actual, (pivote, prop) => {
+              return pivote[prop] = importacion;
+            });
+            editor.abrir_nodo(directorio_actual);
+            this.cerrar();
+          }
+        }
+      });
+    },
   },
   watch: {
     iconos_izquierdos(nuevo_valor) {
@@ -445,6 +529,7 @@ Vue.component("open-editor", {
       await this.cargar_subnodos();
       await this.cargar_source();
       await this.cargar_recurso_remoto();
+      this.$window.oe = this;
     } catch (error) {
       this.gestionar_error(error);
     }

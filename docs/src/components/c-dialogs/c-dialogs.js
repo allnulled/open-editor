@@ -45,7 +45,7 @@ Vue.component("c-dialogs", {
       return this.abrir("dialogo_de_pedir_texto");
     },
     personalizado(opts) {
-      const { plantilla, titulo, datos = false } = opts;
+      const { plantilla, titulo, datos = false, metodos = {} } = opts;
       this.dialogo_personalizado_titulo = titulo;
       this.$vue.component("dialogo-personalizado", {
         name: "dialogo-personalizado",
@@ -68,6 +68,7 @@ Vue.component("c-dialogs", {
         methods: {
           responder: (...args) => this.responder(...args),
           cerrar: (...args) => this.cerrar(...args),
+          ...metodos
         },
       });
       this.esta_dialogo_personalizado_abierto = true;

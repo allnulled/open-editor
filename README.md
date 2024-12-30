@@ -416,6 +416,7 @@ Con el editor puedes, de forma relativamente intuitiva:
  - exportar un fichero a URL: botón «Export».
 
 Por tanto, podemos decir que el editor ofrece cierto soporte para ficheros:
+
   - html
   - css
   - js
@@ -427,3 +428,9 @@ Otras features más avanzadas:
  - puedes crear componentes html con vue.js v2 muy directo
  - puedes visualizar código markdown, html o vue.js en un diálogo
  - puedes convertir código markdown, html o vue.js en formato PDF
+
+Las siguientes features por incorporar:
+
+ - puedes exportar un nodo del árbol de ficheros a json
+ - puedes importar un json a nodo del árbol de ficheros
+ - puedes compilar sintaxis de pegjs/peggy y generar parsers

@@ -148,7 +148,7 @@
                         <div class="icono_contextual fondo_rojo"
                             title="Exportar como URL"
                             v-on:click="exportar_como_url">
-                            Export
+                            Link
                         </div>
                     </template>
                     <template v-if="nodo_actual_es_directorio">
@@ -167,6 +167,16 @@
                             title="Elimina directorio"
                             v-on:click="eliminar_carpeta_actual">
                             Dir--
+                        </div>
+                        <div class="icono_contextual fondo_blanco"
+                            title="Importar directorio como JSON"
+                            v-on:click="importar_directorio_como_json">
+                            &lt;&lt; JSON
+                        </div>
+                        <div class="icono_contextual fondo_blanco"
+                            title="Exportar directorio como JSON"
+                            v-on:click="exportar_directorio_como_json">
+                            &gt;&gt; JSON
                         </div>
                     </template>
                 </div>
