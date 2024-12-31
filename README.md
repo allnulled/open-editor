@@ -387,7 +387,78 @@ Vue.prototype.$ufs.require = (path, parameters = []) => {
 };
 ```
 
-Con esto podemos hacer includes de los ficheros que hay guardados por `Vue.prototype.$ufs`.
+De hecho, esto sucede en el `mounted` de `src/components/open-editor/open-editor.js`. También se inyecta `this.$ufs.requireVueComponent` que funciona muy similar: le pasamos la ruta común de los 3 ficheros html, css y js del componente vue, sin la extensión, y él cargará los 3. Y también `Vue.prototype.$openEditor`.
+
+Sabes qué, mejor dejo el `mounted` aquí.
+
+```js
+
+  async mounted() {
+    try {
+      this.$logger.trace("open-editor][mounted", arguments);
+      Vue.prototype.$openEditor = this;
+      Vue.prototype.$downloadFile = this.downloadTextFile.bind(this);
+      Vue.prototype.$ufs = UFS_manager.create();
+      Vue.prototype.$ufs.require = (path, parameters = []) => {
+        const filepath = Vue.prototype.$ufs.resolve_path(path);
+        const filecontents = Vue.prototype.$ufs.read_file(filepath);
+        const asyncExample = async function () { };
+        const AsyncFunction = asyncExample.constructor;
+        const filedata = new AsyncFunction(filecontents);
+        return filedata.call(this, ...parameters);
+      };
+      Vue.prototype.$ufs.requireVueComponent = async (path, parameters = {}) => {
+        const $ufs = Vue.prototype.$ufs;
+        // Import css
+        const contentCss = $ufs.read_file(path + ".css");
+        // Import html
+        const contentHtml = $ufs.read_file(path + ".html");
+        // Import js
+        const contentJs = $ufs.read_file(path + ".js");
+        // Injections
+        Inject_css: {
+          const styleTag = document.createElement("style");
+          styleTag.textContent = contentCss;
+          const repeated = Array.from(document.body.querySelectorAll("style")).filter(styleTag => {
+            const uid = styleTag.getAttribute("style-tag-id");
+            return uid === path;
+          });
+          if (repeated.length === 0) {
+            styleTag.setAttribute("style-tag-id", path);
+            document.body.appendChild(styleTag);
+          }
+        }
+        Inject_js: {
+          const AsyncFunction = (async function () { }).constructor;
+          let scriptCode = contentJs;
+          console.log(contentJs);
+          Object.assign(parameters, {
+            $template: contentHtml
+          });
+          const asyncFunction = new AsyncFunction(...Object.keys(parameters), contentJs);
+          scriptCode = asyncFunction.toString();
+          const result = await asyncFunction.call(this, ...Object.values(parameters));
+          return result;
+        }
+      };
+      this.registrar_evento_de_redimensionar();
+      this.evento_de_redimensionar();
+      await this.cargar_subnodos();
+      await this.cargar_source();
+      await this.cargar_recurso_remoto();
+      this.$window.oe = this;
+    } catch (error) {
+      this.gestionar_error(error);
+    }
+  },
+  unmounted() {
+    this.$logger.trace("open-editor][unmounted", arguments);
+    this.desregistrar_evento_de_redimensionar();
+    this.deshookear_consola();
+  }
+```
+
+La mayor parte del `mounted` la ocupa el `Vue.prototype.$ufs.requireVueComponent` ahora mismo al menos. Pero con esto podemos hacer includes de los ficheros que hay guardados por `Vue.prototype.$ufs` desde el momento en que tengamos montado `open-editor` en el DOM.
 
 La otra API inyectada, ésta desde `src/components/open-editor/windows-port.js` es la de `WindowManager` que deriva de [`process-interface`](https://github.com/allnulled/process-interface).
 
