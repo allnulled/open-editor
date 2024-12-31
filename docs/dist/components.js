@@ -1427,7 +1427,15 @@ Vue.component("open-editor", {
       URL.revokeObjectURL(link.href);
     },
     async descargar_fichero() {
-      this.downloadTextFile(this.nodo_actual.split("/").pop(), this.nodo_actual_contenido_de_fichero);
+      const filename = this.nodo_actual.split("/").pop();
+      const filesize = this.nodo_actual_contenido_de_fichero.length;
+      const confirmacion = await this.$dialogs.confirmar({
+        titulo: "Descarga de fichero",
+        pregunta: `¿Seguro que quieres descargar el fichero ${filename}? Ocupa ${filesize}B.`
+      });
+      if(confirmacion) {
+        this.downloadTextFile(filename, this.nodo_actual_contenido_de_fichero);
+      }
     },
     async exportar_directorio_como_json() {
       this.$logger.trace("open-editor][exportar_directorio_como_json", arguments);
