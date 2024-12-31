@@ -2,9 +2,10 @@ Vue.component("windows-port", {
   name: "windows-port",
   template: $template,
   props: {
-    
+
   },
   data() {
+    this.$logger.trace("windows-port][data", arguments);
     return {
       alphabet: "abcdefghijklmnopqrstuvwxyz".split(""),
       is_showing_windows_port: false,
@@ -14,6 +15,7 @@ Vue.component("windows-port", {
   },
   methods: {
     _generateId(len = 30) {
+      this.$logger.trace("windows-port][_generateId", arguments);
       let id = "";
       while (id.length < len) {
         id += this.alphabet[Math.floor(Math.random() * this.alphabet.length)];
@@ -21,10 +23,11 @@ Vue.component("windows-port", {
       return id;
     },
     createWindow(title, template, generator) {
+      this.$logger.trace("windows-port][createWindow", arguments);
       this.$ensure({ title }).type("string");
       this.$ensure({ template }).type("string");
-      if(typeof generator === "undefined") {
-        generator = function() {
+      if (typeof generator === "undefined") {
+        generator = function () {
           return {
             data() {
               return {};
@@ -61,8 +64,9 @@ Vue.component("windows-port", {
       };
     },
     closeWindow(name) {
+      this.$logger.trace("windows-port][closeWindow", arguments);
       const activeWindow = this.active_windows[name];
-      if(activeWindow) {
+      if (activeWindow) {
         try {
           activeWindow.process.close();
         } catch (error) {
@@ -72,6 +76,7 @@ Vue.component("windows-port", {
       }
     },
     close() {
+      this.$logger.trace("windows-port][close", arguments);
       this.closeWindow(this.window_component);
       this.is_showing_windows_port = false;
     }

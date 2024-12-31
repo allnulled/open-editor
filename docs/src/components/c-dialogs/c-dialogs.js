@@ -8,6 +8,7 @@ Vue.component("c-dialogs", {
     }
   },
   data() {
+    this.$logger.trace("c-dialogs][data", arguments);
     return {
       tickets: 1,
       dialogo: undefined,
@@ -24,27 +25,32 @@ Vue.component("c-dialogs", {
   },
   methods: {
     getTicket() {
+      this.$logger.trace("c-dialogs][getTicket", arguments);
       return this.tickets++;
     },
     confirmar(opts) {
+      this.$logger.trace("c-dialogs][confirmar", arguments);
       const { pregunta, titulo } = opts;
       this.dialogo_de_confirmacion_titulo = titulo;
       this.dialogo_de_confirmacion_enunciado = pregunta;
       return this.abrir("dialogo_de_confirmacion");
     },
     notificar(opts) {
+      this.$logger.trace("c-dialogs][notificar", arguments);
       const { pregunta, titulo } = opts;
       this.dialogo_de_notificacion_titulo = titulo;
       this.dialogo_de_notificacion_enunciado = pregunta;
       return this.abrir("dialogo_de_notificacion");
     },
     pedir_texto(opts) {
+      this.$logger.trace("c-dialogs][pedir_texto", arguments);
       const { pregunta, titulo } = opts;
       this.dialogo_de_notificacion_titulo = titulo;
       this.dialogo_de_notificacion_enunciado = pregunta;
       return this.abrir("dialogo_de_pedir_texto");
     },
     personalizado(opts) {
+      this.$logger.trace("c-dialogs][personalizado", arguments);
       const { plantilla, titulo, datos = false, metodos = {} } = opts;
       this.dialogo_personalizado_titulo = titulo;
       this.$vue.component("dialogo-personalizado", {
@@ -75,6 +81,7 @@ Vue.component("c-dialogs", {
       return this.abrir("dialogo_personalizado");
     },
     abrir(id) {
+      this.$logger.trace("c-dialogs][abrir", arguments);
       if (this.respuesta_pendiente) {
         throw new Error("Hay un diálogo pendiente y no se puede abrir el diálogo «" + id + "»");
       }
@@ -91,10 +98,12 @@ Vue.component("c-dialogs", {
       return this.respuesta_pendiente.promise;
     },
     responder(valor) {
+      this.$logger.trace("c-dialogs][responder", arguments);
       this.respuesta = valor;
       return this;
     },
     resetear_formularios() {
+      this.$logger.trace("c-dialogs][resetear_formularios", arguments);
       const ids = Object.keys(this.$refs).filter(id => id.startsWith("respuesta_"));
       for (let i = 0; i < ids.length; i++) {
         const id = ids[i];
@@ -102,6 +111,7 @@ Vue.component("c-dialogs", {
       }
     },
     cerrar(error = false) {
+      this.$logger.trace("c-dialogs][cerrar", arguments);
       this.dialogo.close();
       const respuesta = this.respuesta;
       const respuesta_pendiente = this.respuesta_pendiente;
@@ -121,6 +131,7 @@ Vue.component("c-dialogs", {
     }
   },
   mounted: function () {
+    this.$logger.trace("c-dialogs][mounted", arguments);
     this.$vue.prototype.$dialogs = this;
   }
 });

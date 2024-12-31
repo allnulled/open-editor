@@ -7,7 +7,15 @@
 [x] botón para *.md de visualizar "View" »»» Diálogo WindowProcess
 [x] botón para *.html de visualizar "View" »»» Diálogo WindowProcess
 [x] botón para importar y exportar directorios
-[ ] botón para descargar fichero
-[ ] soporte para pegjs en botón de compilar
+[x] botón para descargar fichero
+[x] soporte para pegjs en botón de compilar
+[x] retocando algo de estilos
+[x] logger trace en open-editor
+[ ] método para importar componentes Vue.js v2 desde ufs
 [ ] parche console.log a badge
 [ ] api de badges
+[ ] botón de snippets
+[ ] botón de code para códigos:
+  [ ] html
+  [ ] js
+  [ ] css

@@ -69,6 +69,7 @@
             color: gold: font-family: Arial;
             font-size: 10px;
             font-family: monospace;
+            font-family: Arial;
             border: 0px solid #888;
             color: blue;
             text-shadow: 0 0 1px blue;
@@ -112,12 +113,11 @@
         #intersitial_overlayer_1_box {
             font-family: Arial, LinuxLibertine;
             font-size: 18px;
-            background-color: rgba(255,0,0,0.2);
+            background-color: rgba(0,0,225,0.2);
             color: white;
             padding: 20px;
-            border: 1px solid white;
-            border-radius: 4pt;
-            box-shadow: 0 0 3px red;
+            border: 1px solid #FFF4;
+            border-radius: 2pt;
             text-shadow: 0 0 1px white;
             text-align: center;
         }
@@ -141,8 +141,11 @@
         <pre id="intersitial_modules_trace"></pre>
         <div id="intersitial_overlayer_1">
             <span id="intersitial_overlayer_1_box">
-                <div id="intersitial_overlayer_title"><a href="#">open-editor</a></div>
+                <div id="intersitial_overlayer_title"><a href="://allnulled.github.io/open-editor">allnulled.github.io/open-editor</a></div>
             </span>
+            <div style="padding: 12px; text-align: center; color: #FFF8;">
+                <span>...coming in <span id="intersitial_countdown_seconds">3</span>...</span>
+            </div>
             <div style="padding: 4px;width:100%;">
                 <div id="intersitial_loader" style="">
                     <div id="intersitial_loader_bar"></div>
@@ -153,6 +156,27 @@
             </div>
         </div>
     </div>
+    <script>
+        window.startIntersitialCountdown = function() {
+            let countdown = 4;
+            const decrease = () => {
+                const countdownerElement = document.querySelector("#intersitial_countdown_seconds");
+                if(countdownerElement) {
+                    countdown--;
+                    if(countdown <= 0) {
+                        countdownerElement.textContent = "Modules are taking too much.";
+                    } else {
+                        countdownerElement.textContent = countdown;
+                    }
+                }
+            };
+            const intervalId = setInterval(decrease, 1000);
+            decrease();
+            setTimeout(() => {
+                clearInterval(intervalId);
+            }, 1000 * 2.5);
+        }
+    </script>
     <script src="src/external/importer.js"></script>
     <script src="src/index.js"></script>
 </body>

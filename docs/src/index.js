@@ -5,12 +5,14 @@ window.process = {
     }
 };
 process.env.NODE_ENV = "production";
+process.env.NODE_ENV = "test";
 const main = async function () {
     try {
         Import_scripts: {
+            window.startIntersitialCountdown();
             if (process.env.NODE_ENV === "test") {
                 // importer.setTotal(64);
-                importer.setTotal(54);
+                importer.setTotal(55);
                 importer.setTimeout(1000 * 2);
                 First_wave: {
                     await Promise.all([
@@ -28,6 +30,7 @@ const main = async function () {
                         importer.scriptSrc("src/external/process-interface.js"),
                         importer.scriptSrc("src/external/marked.js"),
                         importer.scriptSrc("src/external/html2pdf.bundle.js"),
+                        importer.scriptSrc("src/external/pegjs.js"),
                         importer.scriptSrc("src/external/conductometria.bundle.js"),
                     ]);
                 }
@@ -69,23 +72,24 @@ const main = async function () {
             }
         }
         Create_app: {
-            const processInterface = new ProcessInterface();
+            const processInterface = new window.ProcessInterface();
             const processManager = new processInterface.ProcessManager();
             Vue.prototype.$process = {};
             Vue.prototype.$process.interface = processInterface;
             Vue.prototype.$process.manager = processManager;
-            Vue.prototype.$vue = Vue;
-            Vue.prototype.$markdown = marked;
-            Vue.prototype.$pdf = { save: html2pdf };
+            Vue.prototype.$vue = window.Vue;
+            Vue.prototype.$markdown = window.marked;
+            Vue.prototype.$pdf = { save: window.html2pdf };
+            Vue.prototype.$peg = window.PEG;
             Vue.prototype.$dialogs = undefined;
             Vue.prototype.$ufs = undefined;
-            Vue.prototype.$logger = BasicLogger.create("app", { trace: true });
+            Vue.prototype.$logger = window.BasicLogger.create("app", { trace: true });
             Vue.prototype.$window = window;
-            Vue.prototype.$importer = importer;
-            Vue.prototype.$socketio = io;
-            Vue.prototype.$fetch = fetch;
-            Vue.prototype.$ensure = ensure;
-            Vue.prototype.$store = UniversalStore.create();
+            Vue.prototype.$importer = window.importer;
+            Vue.prototype.$socketio = window.io;
+            Vue.prototype.$fetch = window.fetch;
+            Vue.prototype.$ensure = window.ensure;
+            Vue.prototype.$store = window.UniversalStore.create();
             Conflictive_point: {
                 // Vue.prototype.$sqlite = new SQLitePolyfill("litestarter.main.db", "src/external/sql-wasm.wasm");
                 // await Vue.prototype.$sqlite.init("litestarter.main.db", "src/external/sql-wasm.wasm");

@@ -218,13 +218,13 @@
     min-width: auto;
     max-width: auto;
     border-radius: 50%;
-    border-radius: 4pt;
+    border-radius: 2pt;
     text-align: center;
     vertical-align: middle;
     font-size: 7px;
     font-weight: bold;
     padding-top: 10px;
-    border: 1px solid #FFF;
+    border: 1px solid #FFF4;
     cursor: pointer;
     box-shadow: inset 0px 0px 10px black, 0px 0px 2px white;
     opacity: 0.8;
@@ -241,22 +241,24 @@
     opacity: 1;
 }
 
+:root {
+    --color-de-borde-1: 1px solid #FFF1;
+}
+
 .open-editor .panel_central {
-    border-left: 1px solid #DDD;
-    border-right: 1px solid #DDD;
     background-color: #040404;
     border-radius: 0pt;
 }
 
 .open-editor .panel_superior {
     padding-top: 0px; /*PIXEL PERFECT =D*/
-    border-top: 1px solid #DDD;
-    border-bottom: 1px solid #DDD;
+    border-top: var(--color-de-borde-1);
+    border-bottom: var(--color-de-borde-1);
 }
 
 .open-editor .panel_inferior {
-    border-top: 1px solid #DDD;
-    border-bottom: 1px solid #DDD;
+    border-top: var(--color-de-borde-1);
+    border-bottom: var(--color-de-borde-1);
 }
 
 .open-editor .contenedor_en_panel_superior {
@@ -384,6 +386,7 @@
 
 .open-editor .contenedor_de_lista_de_nodos {
     text-align: center;
+    padding: 4px;
 }
 
 .open-editor .lista_de_nodos {

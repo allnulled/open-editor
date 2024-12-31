@@ -63225,6 +63225,7 @@ Vue.component("c-dialogs", {
     }
   },
   data() {
+    this.$logger.trace("c-dialogs][data", arguments);
     return {
       tickets: 1,
       dialogo: undefined,
@@ -63241,27 +63242,32 @@ Vue.component("c-dialogs", {
   },
   methods: {
     getTicket() {
+      this.$logger.trace("c-dialogs][getTicket", arguments);
       return this.tickets++;
     },
     confirmar(opts) {
+      this.$logger.trace("c-dialogs][confirmar", arguments);
       const { pregunta, titulo } = opts;
       this.dialogo_de_confirmacion_titulo = titulo;
       this.dialogo_de_confirmacion_enunciado = pregunta;
       return this.abrir("dialogo_de_confirmacion");
     },
     notificar(opts) {
+      this.$logger.trace("c-dialogs][notificar", arguments);
       const { pregunta, titulo } = opts;
       this.dialogo_de_notificacion_titulo = titulo;
       this.dialogo_de_notificacion_enunciado = pregunta;
       return this.abrir("dialogo_de_notificacion");
     },
     pedir_texto(opts) {
+      this.$logger.trace("c-dialogs][pedir_texto", arguments);
       const { pregunta, titulo } = opts;
       this.dialogo_de_notificacion_titulo = titulo;
       this.dialogo_de_notificacion_enunciado = pregunta;
       return this.abrir("dialogo_de_pedir_texto");
     },
     personalizado(opts) {
+      this.$logger.trace("c-dialogs][personalizado", arguments);
       const { plantilla, titulo, datos = false, metodos = {} } = opts;
       this.dialogo_personalizado_titulo = titulo;
       this.$vue.component("dialogo-personalizado", {
@@ -63292,6 +63298,7 @@ Vue.component("c-dialogs", {
       return this.abrir("dialogo_personalizado");
     },
     abrir(id) {
+      this.$logger.trace("c-dialogs][abrir", arguments);
       if (this.respuesta_pendiente) {
         throw new Error("Hay un diálogo pendiente y no se puede abrir el diálogo «" + id + "»");
       }
@@ -63308,10 +63315,12 @@ Vue.component("c-dialogs", {
       return this.respuesta_pendiente.promise;
     },
     responder(valor) {
+      this.$logger.trace("c-dialogs][responder", arguments);
       this.respuesta = valor;
       return this;
     },
     resetear_formularios() {
+      this.$logger.trace("c-dialogs][resetear_formularios", arguments);
       const ids = Object.keys(this.$refs).filter(id => id.startsWith("respuesta_"));
       for (let i = 0; i < ids.length; i++) {
         const id = ids[i];
@@ -63319,6 +63328,7 @@ Vue.component("c-dialogs", {
       }
     },
     cerrar(error = false) {
+      this.$logger.trace("c-dialogs][cerrar", arguments);
       this.dialogo.close();
       const respuesta = this.respuesta;
       const respuesta_pendiente = this.respuesta_pendiente;
@@ -63338,6 +63348,7 @@ Vue.component("c-dialogs", {
     }
   },
   mounted: function () {
+    this.$logger.trace("c-dialogs][mounted", arguments);
     this.$vue.prototype.$dialogs = this;
   }
 });
@@ -63724,7 +63735,7 @@ Vue.component("open-editor", {
                                             </li>
                                         </template>
                                         <template v-else>
-                                            <li>
+                                            <li style="text-align: center;">
                                                 <span class="font_size_small">There are no files or directories here.</span>
                                             </li>
                                         </template>
@@ -63853,17 +63864,17 @@ Vue.component("open-editor", {
   },
   methods: {
     registrar_evento_de_redimensionar() {
-      console.log("registrar_evento_de_redimensionar");
+      this.$logger.trace("open-editor][registrar_evento_de_redimensionar", arguments);
       //window.addEventListener("resize", this.evento_de_redimensionar);
       window.addEventListener('resize', this.evento_de_redimensionar);
     },
     desregistrar_evento_de_redimensionar() {
-      console.log("desregistrar_evento_de_redimensionar");
+      this.$logger.trace("open-editor][desregistrar_evento_de_redimensionar", arguments);
       //window.removeEventListener("resize", this.evento_de_redimensionar);
       window.removeEventListener("resize", this.evento_de_redimensionar);
     },
     evento_de_redimensionar() {
-      console.log("evento_de_redimensionar");
+      this.$logger.trace("open-editor][evento_de_redimensionar", arguments);
       const window = this.$window;
       const windowBetterHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
       const isKeyboardOpen = windowBetterHeight < screen.height; // Ajusta el umbral si es necesario
@@ -63875,11 +63886,11 @@ Vue.component("open-editor", {
       }
     },
     lose_focus_from_editor() {
-      console.log("lose_focus_from_editor");
+      this.$logger.trace("open-editor][lose_focus_from_editor", arguments);
       this.$refs.editor_de_codigo.blur();
     },
     obtener_posicion_de_cursor(textarea) {
-      console.log("obtener_posicion_de_cursor");
+      this.$logger.trace("open-editor][obtener_posicion_de_cursor", arguments);
       const { value, selectionStart, selectionEnd } = textarea;
       const getLineAndColumn = (offset) => {
         const lines = value.slice(0, offset).split("\n");
@@ -63893,7 +63904,7 @@ Vue.component("open-editor", {
       };
     },
     actualizar_posicion_de_cursor() {
-      console.log("actualizar_posicion_de_cursor");
+      this.$logger.trace("open-editor][actualizar_posicion_de_cursor", arguments);
       const editor = this.$refs.editor_de_codigo;
       this.editor_de_codigo_posicion_cursor = false;
       setTimeout(() => {
@@ -63902,7 +63913,7 @@ Vue.component("open-editor", {
     },
     async cargar_subnodos() {
       try {
-        console.log("cargar_subnodos");
+        this.$logger.trace("open-editor][cargar_subnodos", arguments);
         const subnodos = await this.$ufs.read_directory(this.nodo_actual);
         const subnodos_ordenados = Object.keys(subnodos).sort((s1, s2) => {
           const v1 = subnodos[s1];
@@ -63931,7 +63942,7 @@ Vue.component("open-editor", {
       }
     },
     gestionar_error(error, no_propagar = false) {
-      console.log("gestionar_error");
+      this.$logger.trace("open-editor][gestionar_error", arguments);
       console.log(error);
       this.error = error;
       if (!no_propagar) {
@@ -63939,7 +63950,7 @@ Vue.component("open-editor", {
       }
     },
     subir_de_directorio() {
-      console.log("subir_de_directorio");
+      this.$logger.trace("open-editor][subir_de_directorio", arguments);
       const partes = this.nodo_actual.split(/\//g);
       const nodo_anterior = "/" + partes.splice(0, partes.length - 1).join("/");
       const nodo_anterior_corregido = this.$ufs.resolve_path(nodo_anterior)
@@ -63947,11 +63958,11 @@ Vue.component("open-editor", {
     },
     async crear_carpeta() {
       try {
-        console.log("crear_carpeta");
+        this.$logger.trace("open-editor][crear_carpeta", arguments);
         const nombre = await this.$dialogs.abrir("dialogo_de_pedir_nombre_de_directorio");
         if (!nombre) return;
         const ruta = this.$ufs.resolve_path(this.nodo_actual, nombre);
-        console.log("Creando carpeta: " + ruta);
+        this.$logger.trace("open-editor][Creando carpeta: " + ruta, arguments);
         await this.$ufs.make_directory(ruta);
         await this.cargar_subnodos();
         return;
@@ -63961,7 +63972,7 @@ Vue.component("open-editor", {
     },
     async crear_fichero() {
       try {
-        console.log("crear_fichero");
+        this.$logger.trace("open-editor][crear_fichero", arguments);
         const nombre = await this.$dialogs.abrir("dialogo_de_pedir_nombre_de_fichero");
         if (!nombre) return;
         const ruta = this.$ufs.resolve_path(this.nodo_actual, nombre);
@@ -63974,7 +63985,7 @@ Vue.component("open-editor", {
     },
     async guardar_fichero_actual() {
       try {
-        console.log("abrir_nodo");
+        this.$logger.trace("open-editor][abrir_nodo", arguments);
         await this.$ufs.write_file(this.nodo_actual, this.nodo_actual_contenido_de_fichero);
         return;
       } catch (error) {
@@ -63983,7 +63994,7 @@ Vue.component("open-editor", {
     },
     async cargar_fichero_actual() {
       try {
-        console.log("cargar_fichero_actual");
+        this.$logger.trace("open-editor][cargar_fichero_actual", arguments);
         const contenido = await this.$ufs.read_file(this.nodo_actual);
         this.nodo_actual_contenido_de_fichero = contenido;
         this.$forceUpdate(true);
@@ -63994,7 +64005,7 @@ Vue.component("open-editor", {
     },
     async abrir_nodo(nodo) {
       try {
-        console.log("abrir_nodo");
+        this.$logger.trace("open-editor][abrir_nodo", arguments);
         const ruta = this.$ufs.resolve_path(this.nodo_actual, nodo);
         const es_fichero = await this.$ufs.is_file(ruta);
         if (es_fichero) {
@@ -64020,7 +64031,7 @@ Vue.component("open-editor", {
     },
     async eliminar_carpeta_actual() {
       try {
-        console.log("eliminar_carpeta_actual");
+        this.$logger.trace("open-editor][eliminar_carpeta_actual", arguments);
         const confirmation = await this.$dialogs.abrir("dialogo_de_confirmar_eliminar_directorio_actual");
         if (!confirmation) return;
         await this.$ufs.delete_directory(this.nodo_actual);
@@ -64032,7 +64043,7 @@ Vue.component("open-editor", {
     },
     async eliminar_fichero_actual() {
       try {
-        console.log("eliminar_fichero_actual");
+        this.$logger.trace("open-editor][eliminar_fichero_actual", arguments);
         const confirmation = await this.$dialogs.abrir("dialogo_de_confirmar_eliminar_fichero_actual");
         if (!confirmation) return;
         await this.$ufs.delete_file(this.nodo_actual);
@@ -64044,7 +64055,7 @@ Vue.component("open-editor", {
     },
     async ejecutar_fichero_actual() {
       try {
-        console.log("ejecutar_fichero_actual");
+        this.$logger.trace("open-editor][ejecutar_fichero_actual", arguments);
         // @TODO: start process
         const AsyncFunction = (async function () { }).constructor;
         const function_content = this.nodo_actual_contenido_de_fichero;
@@ -64056,7 +64067,7 @@ Vue.component("open-editor", {
     },
     async compilar_fichero_actual() {
       try {
-        console.log("compilar_fichero_actual");
+        this.$logger.trace("open-editor][compilar_fichero_actual", arguments);
         if (this.nodo_actual.endsWith(".md")) {
           const contenidoMd = this.nodo_actual_contenido_de_fichero;
           const contenidoHtml = this.$markdown.parse(contenidoMd);
@@ -64107,7 +64118,7 @@ Vue.component("open-editor", {
     },
     async formatear_fichero_actual() {
       try {
-        console.log("formatear_fichero_actual");
+        this.$logger.trace("open-editor][formatear_fichero_actual", arguments);
         if (this.nodo_actual.endsWith(".up") || this.nodo_actual.endsWith(".upl")) {
           this.nodo_actual_contenido_de_fichero = this.$window.UPL.format(this.nodo_actual_contenido_de_fichero);
           return;
@@ -64145,12 +64156,12 @@ Vue.component("open-editor", {
       }
     },
     incrementar_tamanio_de_fuente(cantidad) {
-      console.log("incrementar_tamanio_de_fuente");
+      this.$logger.trace("open-editor][incrementar_tamanio_de_fuente", arguments);
       this.editor_de_codigo_tamanio_de_fuente += cantidad;
       this.$refs.editor_de_codigo.style.fontSize = this.editor_de_codigo_tamanio_de_fuente + "px";
     },
     alternar_familia_de_fuente() {
-      console.log("alternar_familia_de_fuente");
+      this.$logger.trace("open-editor][alternar_familia_de_fuente", arguments);
       if (this.editor_de_codigo_familia_de_fuente === "monospace") {
         this.editor_de_codigo_familia_de_fuente = "'9pt Segoe UI','SegoeUI','Noto Sans','sans-serif'";
       } else {
@@ -64159,13 +64170,32 @@ Vue.component("open-editor", {
       this.$refs.editor_de_codigo.style.fontFamily = this.editor_de_codigo_familia_de_fuente;
     },
     cargar_source() {
-      console.log("cargar_source");
+      this.$logger.trace("open-editor][cargar_source", arguments);
       return this.import("/kernel/source.js");
     },
     async import(file) {
       try {
-        console.log("import");
+        this.$logger.trace("open-editor][import", arguments);
         const has_source = await this.$ufs.exists(file);
+        if (has_source) {
+          const source_contents = await this.$ufs.read_file(file);
+          const source_function = new (async function () { }).constructor(source_contents);
+          return await source_function.call(this);
+        }
+      } catch (error) {
+        this.gestionar_error(error);
+      }
+    },
+    async importVueComponent(componentPath) {
+      try {
+        // @DOING: metodo para importar componentes vue desde ufs:
+        this.$logger.trace("open-editor][importVueComponent", arguments);
+        const componentJsPath = componentPath + ".js";
+        const componentCssPath = componentPath + ".css";
+        const componentHtmlPath = componentPath + ".html";
+        const has_js = await this.$ufs.exists(componentJsPath);
+        const has_css = await this.$ufs.exists(componentCssPath);
+        const has_html = await this.$ufs.exists(componentHtmlPath);
         if (has_source) {
           const source_contents = await this.$ufs.read_file(file);
           const source_function = new (async function () { }).constructor(source_contents);
@@ -64177,7 +64207,7 @@ Vue.component("open-editor", {
     },
     async renombrar_nodo_actual() {
       try {
-        console.log("renombrar_nodo_actual");
+        this.$logger.trace("open-editor][renombrar_nodo_actual", arguments);
         const name2 = await this.$dialogs.abrir("dialogo_de_renombrar_nodo_actual");
         if (!name2) return;
         await this.$ufs.rename(this.nodo_actual, name2);
@@ -64192,7 +64222,7 @@ Vue.component("open-editor", {
     },
     async cargar_recurso_remoto() {
       try {
-        console.log("cargar_recurso_remoto");
+        this.$logger.trace("open-editor][cargar_recurso_remoto", arguments);
         const url_parameters = new URLSearchParams(window.location.search);
         if (url_parameters.has("recurso_directo")) {
           const code = url_parameters.get("recurso_directo");
@@ -64211,7 +64241,7 @@ Vue.component("open-editor", {
     },
     async exportar_como_url() {
       try {
-        console.log("exportar_como_url");
+        this.$logger.trace("open-editor][exportar_como_url", arguments);
         const params = new URLSearchParams();
         const recurso_directo = this.nodo_actual_contenido_de_fichero;
         params.set("recurso_directo", recurso_directo);
@@ -64224,7 +64254,7 @@ Vue.component("open-editor", {
     },
     async copiar_fichero_o_directorio() {
       try {
-        console.log("copiar_fichero_o_directorio");
+        this.$logger.trace("open-editor][copiar_fichero_o_directorio", arguments);
         if(this.nodo_actual_es_fichero) {
           // Si es fichero:
           const nueva_ruta = await this.$dialogs.pedir_texto({
@@ -64269,7 +64299,7 @@ Vue.component("open-editor", {
       this.downloadTextFile(this.nodo_actual.split("/").pop(), this.nodo_actual_contenido_de_fichero);
     },
     async exportar_directorio_como_json() {
-      console.log("exportar_directorio_como_json");
+      this.$logger.trace("open-editor][exportar_directorio_como_json", arguments);
       const codigo = JSON.stringify(this.$ufs.read_directory(this.nodo_actual), null, 2);
       await this.$dialogs.personalizado({
         titulo: "Exportar directorio como JSON",
@@ -64297,7 +64327,7 @@ Vue.component("open-editor", {
       });
     },
     async importar_directorio_como_json() {
-      console.log("importar_directorio_como_json");
+      this.$logger.trace("open-editor][importar_directorio_como_json", arguments);
       const editor = this;
       const directorio_actual = this.nodo_actual;
       await this.$dialogs.personalizado({
@@ -64355,25 +64385,25 @@ Vue.component("open-editor", {
   },
   watch: {
     iconos_izquierdos(nuevo_valor) {
-      console.log("watch.iconos_izquierdos");
+      this.$logger.trace("open-editor][watch.iconos_izquierdos", arguments);
       this.$refs.serie_iconos_izquierdos.cambiar_iconos(nuevo_valor);
     },
     iconos_superiores(nuevo_valor) {
-      console.log("watch.iconos_superiores");
+      this.$logger.trace("open-editor][watch.iconos_superiores", arguments);
       this.$refs.serie_iconos_superiores.cambiar_iconos(nuevo_valor);
     },
     iconos_inferiores(nuevo_valor) {
-      console.log("watch.iconos_inferiores");
+      this.$logger.trace("open-editor][watch.iconos_inferiores", arguments);
       this.$refs.serie_iconos_inferiores.cambiar_iconos(nuevo_valor);
     },
     iconos_derechos(nuevo_valor) {
-      console.log("watch.iconos_derechos");
+      this.$logger.trace("open-editor][watch.iconos_derechos", arguments);
       this.$refs.serie_iconos_derechos.cambiar_iconos(nuevo_valor);
     },
   },
   async mounted() {
     try {
-      console.log("mounted");
+      this.$logger.trace("open-editor][mounted", arguments);
       Vue.prototype.$ufs = UFS_manager.create();
       Vue.prototype.$ufs.require = (path, parameters = []) => {
         const filepath = Vue.prototype.$ufs.resolve_path(path);
@@ -64395,7 +64425,7 @@ Vue.component("open-editor", {
     }
   },
   unmounted() {
-    console.log("unmounted");
+    this.$logger.trace("open-editor][unmounted", arguments);
     this.desregistrar_evento_de_redimensionar();
     this.deshookear_consola();
   }
@@ -64473,9 +64503,10 @@ Vue.component("windows-port", {
     </template>
 </div>`,
   props: {
-    
+
   },
   data() {
+    this.$logger.trace("windows-port][data", arguments);
     return {
       alphabet: "abcdefghijklmnopqrstuvwxyz".split(""),
       is_showing_windows_port: false,
@@ -64485,6 +64516,7 @@ Vue.component("windows-port", {
   },
   methods: {
     _generateId(len = 30) {
+      this.$logger.trace("windows-port][_generateId", arguments);
       let id = "";
       while (id.length < len) {
         id += this.alphabet[Math.floor(Math.random() * this.alphabet.length)];
@@ -64492,10 +64524,11 @@ Vue.component("windows-port", {
       return id;
     },
     createWindow(title, template, generator) {
+      this.$logger.trace("windows-port][createWindow", arguments);
       this.$ensure({ title }).type("string");
       this.$ensure({ template }).type("string");
-      if(typeof generator === "undefined") {
-        generator = function() {
+      if (typeof generator === "undefined") {
+        generator = function () {
           return {
             data() {
               return {};
@@ -64532,8 +64565,9 @@ Vue.component("windows-port", {
       };
     },
     closeWindow(name) {
+      this.$logger.trace("windows-port][closeWindow", arguments);
       const activeWindow = this.active_windows[name];
-      if(activeWindow) {
+      if (activeWindow) {
         try {
           activeWindow.process.close();
         } catch (error) {
@@ -64543,6 +64577,7 @@ Vue.component("windows-port", {
       }
     },
     close() {
+      this.$logger.trace("windows-port][close", arguments);
       this.closeWindow(this.window_component);
       this.is_showing_windows_port = false;
     }
