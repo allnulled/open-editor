@@ -226,10 +226,47 @@ Vue.component("open-editor", {
       try {
         this.$logger.trace("open-editor][compilar_fichero_actual", arguments);
         if (this.nodo_actual.endsWith(".md")) {
+          // Compilar de md a html:
           const contenidoMd = this.nodo_actual_contenido_de_fichero;
           const contenidoHtml = this.$markdown.parse(contenidoMd);
           const ficheroHtml = this.nodo_actual.replace(/\.md$/g, ".html");
           this.$ufs.write_file(ficheroHtml, contenidoHtml);
+          await this.$dialogs.notificar({
+            titulo: "Compilación exitosa",
+            pregunta: "Tu fichero de html compilado se encuentra en:\n" + ficheroHtml
+          });
+        } else if(this.nodo_actual.endsWith(".pegjs")) {
+          // Compilar de pegjs a js:
+          const contenidoPegjs = this.nodo_actual_contenido_de_fichero;
+          const globalId = await this.$dialogs.pedir_texto({
+            titulo: "Compilar *.pegjs a *.js",
+            pregunta: "¿Qué nombre de variable global quieres que tenga este parser?"
+          });
+          if(!globalId) {
+            return;
+          }
+          const stringId = JSON.stringify(globalId);
+          const contenidoJsParser = this.$peg.buildParser(contenidoPegjs, {
+            output: "source",
+            trace: false,
+          });
+          const ficheroJs = this.nodo_actual.replace(/\.pegjs$/g, ".js");
+          const contenidoJs = `(function(mod) {
+            if(typeof window !== 'undefined') {
+              window[${stringId}] = mod;
+            }
+            if(typeof global !== 'undefined') {
+              global[${stringId}] = mod;
+            }
+            if(typeof module !== 'undefined') {
+              module.exports = mod;
+            }
+          })(${contenidoJsParser})`;
+          this.$ufs.write_file(ficheroJs, contenidoJs);
+          await this.$dialogs.notificar({
+            titulo: "Compilación exitosa",
+            pregunta: "Tu fichero de sintaxis compilada se encuentra en:\n" + ficheroJs
+          });
         }
       } catch (error) {
         this.gestionar_error(error, true);

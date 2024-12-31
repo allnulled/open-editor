@@ -21,8 +21,8 @@
             </div>
             <div class="window-body">
                 <div class="window-body-main">
-                    <div>{{ dialogo_de_notificacion_enunciado }}</div>
-                    <input class="width_100" type="text" ref="texto_de_pedir_texto" placeholder="/admite/rutas/completas"  v-on:keypress.enter="() => responder($refs.texto_de_pedir_texto.value).cerrar()" />
+                    <div style="white-space:pre-wrap;">{{ dialogo_de_notificacion_enunciado }}</div>
+                    <input class="width_100" type="text" ref="texto_de_pedir_texto" placeholder=""  v-on:keypress.enter="() => responder($refs.texto_de_pedir_texto.value).cerrar()" />
                 </div>
                 <div class="window-body-foot">
                     <button class="" v-on:click="() => responder($refs.texto_de_pedir_texto.value).cerrar()">Aceptar</button>
@@ -65,7 +65,7 @@
             </div>
             <div class="window-body">
                 <div class="window-body-main">
-                    <div>{{ dialogo_de_confirmacion_enunciado }}</div>
+                    <div style="white-space:pre-wrap;">{{ dialogo_de_confirmacion_enunciado }}</div>
                 </div>
                 <div class="window-body-foot">
                     <button class="font_weight_bold" v-on:click="() => responder(true).cerrar()">Confirmar</button>
@@ -86,7 +86,7 @@
             </div>
             <div class="window-body">
                 <div class="window-body-main">
-                    <div>{{ dialogo_de_notificacion_enunciado }}</div>
+                    <div style="white-space:pre-wrap;">{{ dialogo_de_notificacion_enunciado }}</div>
                 </div>
                 <div class="window-body-foot">
                     <button class="font_weight_bold" v-on:click="() => responder(true).cerrar()">Aceptar</button>
