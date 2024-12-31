@@ -12,7 +12,9 @@
 [x] retocando algo de estilos
 [x] logger trace en open-editor
 [x] parche console.log a badge
-[ ] método para importar componentes Vue.js v2 desde ufs
+[x] método para importar componentes Vue.js v2 desde ufs
+  [x] this.$ufs.requireVueComponent(...)
+
 [ ] api de badges
 [ ] botón de snippets
 [ ] botón de code para códigos:

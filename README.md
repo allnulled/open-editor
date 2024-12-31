@@ -402,6 +402,51 @@ La otra API inyectada, ésta desde `src/components/open-editor/windows-port.js` 
 
 Inyecta `Vue.prototype.$windowsPort` globalmente en el `mounted`. Y desde aquí podemos tirar un **proceso de ventana** o **WindowProcess**.
 
+### 8. ¿Cómo trabajo con componentes gráficos?
+
+Para gráficos, estamos sobre el html, css, javascript, y vue@2 sobre todo.
+
+Para obtener una lista de los componentes renderizables por vue@2 puedes:
+
+```js
+console.log(Vue.options.components);
+```
+
+Para ampliar la lista de los componentes renderizables por vue@2 puedes:
+
+```js
+Vue.component("nombre-del-componente", {
+  name: "nombre-del-componente",
+  props: {},
+  template: `<div>Hola</div>`,
+  data() {
+    return {}
+  },
+  methods: {},
+  watch: {},
+  computed: {},
+  mounted() {},
+  unmounted() {}
+})
+```
+
+Pero si quieres importar directamente `.css`, `.html` y `.js` de una, con `open-editor` puedes:
+
+```js
+this.$ufs.requireVueComponent("/path/to/my/component/component");
+// Cargará conjuntamente los ficheros:
+//   - /path/to/my/component/component.html (solo texto)
+//   - /path/to/my/component/component.css (como style tag con uid)
+//   - /path/to/my/component/component.js (inyectando los parámetros de función: $template)
+```
+
+De esta forma, con una línea rápida puedes importar los componentes que requieras.
+
+Los 2 imports agregados a `this.$ufs` de la librería [`universal-file-system`](https://github.com/allnulled/universal-file-system) funcionan como si llamases a esa función, no hay cacheo de nada, diferente del `require` de node.js. Igualmente, si necesitas patrón singleton lo puedes implementar rápidamente a mano en cada módulo que lo precise.
+
+Otro dato importante es que los estilos cargados con `$ufs.requireVueComponent` tienen un identificador único, por el cual se inyectan solo 1 vez. Es la implementación de *patrón singleton* que he improvisado para los estilos.
+
+
 ## Funcionalidades del editor
 
 Con el editor puedes, de forma relativamente intuitiva:
@@ -451,3 +496,4 @@ Las siguientes features por incorporar:
  - puedes exportar un nodo del árbol de ficheros a json
  - puedes importar un json a nodo del árbol de ficheros
  - puedes compilar sintaxis de pegjs/peggy y generar parsers
+

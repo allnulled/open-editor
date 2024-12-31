@@ -235,14 +235,14 @@ Vue.component("open-editor", {
             titulo: "Compilación exitosa",
             pregunta: "Tu fichero de html compilado se encuentra en:\n" + ficheroHtml
           });
-        } else if(this.nodo_actual.endsWith(".pegjs")) {
+        } else if (this.nodo_actual.endsWith(".pegjs")) {
           // Compilar de pegjs a js:
           const contenidoPegjs = this.nodo_actual_contenido_de_fichero;
           const globalId = await this.$dialogs.pedir_texto({
             titulo: "Compilar *.pegjs a *.js",
             pregunta: "¿Qué nombre de variable global quieres que tenga este parser?"
           });
-          if(!globalId) {
+          if (!globalId) {
             return;
           }
           const stringId = JSON.stringify(globalId);
@@ -282,15 +282,21 @@ Vue.component("open-editor", {
                 </div>
                 <div style="position: absolute; bottom: 10px; left: auto; right: 9px;">
                     <button v-on:click="pdfy">Descargar PDF</button>
-                    <button v-on:click="() => $windowsPort.close()">Cancelar</button>
+                    <button v-on:click="textify">Descargar texto</button>
                 </div>
             </div>
           </div>`;
         }
+        const editor = this;
         const generadorDialogo = function () {
           return {
             methods: {
-              pdfy() {
+              textify: function () {
+                const filename = editor.nodo_actual.replace(/\.(md|html)$/g, "") + ".txt";
+                const filecontent = this.$refs.contents.textContent;
+                editor.$downloadFile(filename, filecontent);
+              },
+              pdfy: function () {
                 this.$pdf.save(this.$refs.contents);
               }
             }
@@ -420,14 +426,14 @@ Vue.component("open-editor", {
         const url_parameters = new URLSearchParams(window.location.search);
         if (url_parameters.has("recurso_directo")) {
           const code = url_parameters.get("recurso_directo");
-          await this.$ufs.write_file("/resource.upl", code);
-          await this.abrir_nodo("/resource.upl");
+          await this.$ufs.write_file("/resource.js", code);
+          await this.abrir_nodo("/resource.js");
         } else if (url_parameters.has("recurso_remoto")) {
           const recurso_remoto = url_parameters.get("recurso_remoto");
           const response = await fetch(recurso_remoto);
           const code = await response.text();
-          await this.$ufs.write_file("/resource.upl", code);
-          await this.abrir_nodo("/resource.upl");
+          await this.$ufs.write_file("/resource.js", code);
+          await this.abrir_nodo("/resource.js");
         }
       } catch (error) {
         this.gestionar_error(error);
@@ -449,7 +455,7 @@ Vue.component("open-editor", {
     async copiar_fichero_o_directorio() {
       try {
         this.$logger.trace("open-editor][copiar_fichero_o_directorio", arguments);
-        if(this.nodo_actual_es_fichero) {
+        if (this.nodo_actual_es_fichero) {
           // Si es fichero:
           const nueva_ruta = await this.$dialogs.pedir_texto({
             titulo: "Copiar fichero a otro directorio",
@@ -459,7 +465,7 @@ Vue.component("open-editor", {
             return;
           }
           await this.$ufs.write_file(nueva_ruta, this.nodo_actual_contenido_de_fichero);
-        } else if(this.nodo_actual_es_directorio) {
+        } else if (this.nodo_actual_es_directorio) {
           // Si es directorio:
           const nueva_ruta = await this.$dialogs.pedir_texto({
             titulo: "Copiar directorio a otro directorio",
@@ -496,7 +502,7 @@ Vue.component("open-editor", {
         titulo: "Descarga de fichero",
         pregunta: `¿Seguro que quieres descargar el fichero ${filename}? Ocupa ${filesize}B.`
       });
-      if(confirmacion) {
+      if (confirmacion) {
         this.downloadTextFile(filename, this.nodo_actual_contenido_de_fichero);
       }
     },
@@ -610,6 +616,8 @@ Vue.component("open-editor", {
   async mounted() {
     try {
       this.$logger.trace("open-editor][mounted", arguments);
+      Vue.prototype.$openEditor = this;
+      Vue.prototype.$downloadFile = this.downloadTextFile.bind(this);
       Vue.prototype.$ufs = UFS_manager.create();
       Vue.prototype.$ufs.require = (path, parameters = []) => {
         const filepath = Vue.prototype.$ufs.resolve_path(path);
@@ -619,7 +627,40 @@ Vue.component("open-editor", {
         const filedata = new AsyncFunction(filecontents);
         return filedata.call(this, ...parameters);
       };
-      this.$window.inicio = this;
+      Vue.prototype.$ufs.requireVueComponent = async (path, parameters = {}) => {
+        const $ufs = Vue.prototype.$ufs;
+        // Import css
+        const contentCss = $ufs.read_file(path + ".css");
+        // Import html
+        const contentHtml = $ufs.read_file(path + ".html");
+        // Import js
+        const contentJs = $ufs.read_file(path + ".js");
+        // Injections
+        Inject_css: {
+          const styleTag = document.createElement("style");
+          styleTag.textContent = contentCss;
+          const repeated = Array.from(document.body.querySelectorAll("style")).filter(styleTag => {
+            const uid = styleTag.getAttribute("style-tag-id");
+            return uid === path;
+          });
+          if (repeated.length === 0) {
+            styleTag.setAttribute("style-tag-id", path);
+            document.body.appendChild(styleTag);
+          }
+        }
+        Inject_js: {
+          const AsyncFunction = (async function () { }).constructor;
+          let scriptCode = contentJs;
+          console.log(contentJs);
+          Object.assign(parameters, {
+            $template: contentHtml
+          });
+          const asyncFunction = new AsyncFunction(...Object.keys(parameters), contentJs);
+          scriptCode = asyncFunction.toString();
+          const result = await asyncFunction.call(this, ...Object.values(parameters));
+          return result;
+        }
+      };
       this.registrar_evento_de_redimensionar();
       this.evento_de_redimensionar();
       await this.cargar_subnodos();
