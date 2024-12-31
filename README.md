@@ -25,17 +25,20 @@ Esta es una lista de todos los proyectos que se inyectan en algún momento y viv
 - [sql-wasm.js](https://github.com/sql-js/sql.js) para tener soporte de SQL
 - [sql-wasm.wasm](https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.2.1/dist/sql-wasm.wasm) para los bindings a bajo nivel
 - [beautifier](https://github.com/beautifier/js-beautify) para embellecer el código js, css y html.
-- [win7.css](https://khang-nd.github.io/7.css/) para no tener que pensar en los estilos
-- [@allnulled/importer](https://github.com/allnulled/importer) como sistema de módulos
-- [@allnulled/ensure](https://github.com/allnulled/ensure) para aserciones y errores de tipo
-- [@allnulled/universal-file-system](https://github.com/allnulled/universal-file-system) como parche cross-env para el sistema de ficheros
-- [@allnulled/basic-logger](https://github.com/allnulled/basic-logger/) para tracear cualquier API
-- [@allnulled/browsie](https://github.com/allnulled/browsie) para persistencia fuerte con IndexedDB
-- [@allnulled/conductometria-api](https://github.com/allnulled/conductometria-api) como API de agenda incorporada
-- [@allnulled/process-interface](https://github.com/allnulled/process-interface/) para gestionar ventanas
-- [@allnulled/sqlite-polyfill](https://github.com/allnulled/sqlite-polyfill) para parchear cross-env el SQL
-- [@allnulled/sqlite-data-system](https://github.com/allnulled/sqlite-data-system/) para ampliar lo básico de los sistemas de datos
-- [@allnulled/universal-store](https://github.com/allnulled/universal-store) para persistencia reactiva con localStorage (con `docs/src/external/store.unbundled.js`)
+- [win7.css](https://khang-nd.github.io/7.css/) para no tener que pensar en los estilos.
+- [marked.js](https://github.com/markedjs/marked) para transpilar markdown a html.
+- [html2pdf.js](https://github.com/eKoopmans/html2pdf.js) para conseguir PDFs del html vivo.
+- [pegjs.js](https://github.com/peggyjs/peggy) para poder compilar sintaxis personalizadas.
+- [@allnulled/importer](https://github.com/allnulled/importer) como sistema de módulos.
+- [@allnulled/ensure](https://github.com/allnulled/ensure) para aserciones y errores de tipo.
+- [@allnulled/universal-file-system](https://github.com/allnulled/universal-file-system) como parche cross-env para el sistema de ficheros.
+- [@allnulled/basic-logger](https://github.com/allnulled/basic-logger/) para tracear cualquier API.
+- [@allnulled/browsie](https://github.com/allnulled/browsie) para persistencia fuerte con IndexedDB.
+- [@allnulled/conductometria-api](https://github.com/allnulled/conductometria-api) como API de agenda incorporada.
+- [@allnulled/process-interface](https://github.com/allnulled/process-interface/) para gestionar ventanas.
+- [@allnulled/sqlite-polyfill](https://github.com/allnulled/sqlite-polyfill) para parchear cross-env el SQL.
+- [@allnulled/sqlite-data-system](https://github.com/allnulled/sqlite-data-system/) para ampliar lo básico de los sistemas de datos.
+- [@allnulled/universal-store](https://github.com/allnulled/universal-store) para persistencia reactiva con localStorage (con `docs/src/external/store.unbundled.js`).
 - refresher.js para refresco automático, personalizado y personalizable.
 
 ### APIs internas
@@ -72,13 +75,13 @@ window.process = {
         NODE_ENV: (window.location.href.startsWith("https") ? "production" : "test")
     }
 };
-// process.env.NODE_ENV = "production";
 const main = async function () {
     try {
         Import_scripts: {
+            window.startIntersitialCountdown();
             if (process.env.NODE_ENV === "test") {
                 // importer.setTotal(64);
-                importer.setTotal(54);
+                importer.setTotal(60);
                 importer.setTimeout(1000 * 2);
                 First_wave: {
                     await Promise.all([
@@ -96,6 +99,8 @@ const main = async function () {
                         importer.scriptSrc("src/external/process-interface.js"),
                         importer.scriptSrc("src/external/marked.js"),
                         importer.scriptSrc("src/external/html2pdf.bundle.js"),
+                        importer.scriptSrc("src/external/pegjs.js"),
+                        importer.scriptSrc("src/components/console-hooker/console-hooker-api.js"),
                         importer.scriptSrc("src/external/conductometria.bundle.js"),
                     ]);
                 }
@@ -111,6 +116,7 @@ const main = async function () {
                         importer.importVueComponent("src/components/app/app"),
                         importer.importVueComponent("src/components/c-dialog/c-dialog"),
                         importer.importVueComponent("src/components/c-badge/c-badge"),
+                        importer.importVueComponent("src/components/console-hooker/console-hooker"),
                     ]);
                 }
                 Third_synchronous_wave: {
@@ -137,23 +143,25 @@ const main = async function () {
             }
         }
         Create_app: {
-            const processInterface = new ProcessInterface();
+            const processInterface = new window.ProcessInterface();
             const processManager = new processInterface.ProcessManager();
+            Vue.prototype.$consoleHooker = undefined;
             Vue.prototype.$process = {};
             Vue.prototype.$process.interface = processInterface;
             Vue.prototype.$process.manager = processManager;
-            Vue.prototype.$vue = Vue;
-            Vue.prototype.$markdown = marked;
-            Vue.prototype.$pdf = { save: html2pdf };
+            Vue.prototype.$vue = window.Vue;
+            Vue.prototype.$markdown = window.marked;
+            Vue.prototype.$pdf = { save: window.html2pdf };
+            Vue.prototype.$peg = window.PEG;
             Vue.prototype.$dialogs = undefined;
             Vue.prototype.$ufs = undefined;
-            Vue.prototype.$logger = BasicLogger.create("app", { trace: true });
+            Vue.prototype.$logger = window.BasicLogger.create("app", { trace: true });
             Vue.prototype.$window = window;
-            Vue.prototype.$importer = importer;
-            Vue.prototype.$socketio = io;
-            Vue.prototype.$fetch = fetch;
-            Vue.prototype.$ensure = ensure;
-            Vue.prototype.$store = UniversalStore.create();
+            Vue.prototype.$importer = window.importer;
+            Vue.prototype.$socketio = window.io;
+            Vue.prototype.$fetch = window.fetch;
+            Vue.prototype.$ensure = window.ensure;
+            Vue.prototype.$store = window.UniversalStore.create();
             Conflictive_point: {
                 // Vue.prototype.$sqlite = new SQLitePolyfill("litestarter.main.db", "src/external/sql-wasm.wasm");
                 // await Vue.prototype.$sqlite.init("litestarter.main.db", "src/external/sql-wasm.wasm");
