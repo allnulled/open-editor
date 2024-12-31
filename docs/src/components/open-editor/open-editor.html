@@ -187,19 +187,28 @@
                 </div>
             </div>
             <div class="panel_inferior">
-                <div class="contenedor_en_panel_superior"
-                    v-if="nodo_actual_es_fichero && editor_de_codigo_posicion_cursor">
-                    <div class="textbox_contextual contexto_inferior nowrap">
-                        <b class="">
-                            <span>
-                                Line: {{ editor_de_codigo_posicion_cursor.start.line }}:{{ editor_de_codigo_posicion_cursor.start.column
-                                }}-{{ editor_de_codigo_posicion_cursor.end.line }}:{{ editor_de_codigo_posicion_cursor.end.column }}
-                            </span>
-                            <span> | </span>
-                            <span>
-                                Pos: {{ editor_de_codigo_posicion_cursor.start.offset }}-{{ editor_de_codigo_posicion_cursor.end.offset }}
-                            </span>
-                        </b>
+                <div style="display: flex; flex-direction: row;">
+                    <div class="contenedor_en_panel_superior"
+                        style="flex: 100;">
+                        <template v-if="nodo_actual_es_fichero && editor_de_codigo_posicion_cursor">
+                            <div class="textbox_contextual contexto_inferior nowrap">
+                                <b class="">
+                                    <span>
+                                        Line: {{ editor_de_codigo_posicion_cursor.start.line }}:{{ editor_de_codigo_posicion_cursor.start.column
+                                        }}-{{ editor_de_codigo_posicion_cursor.end.line }}:{{ editor_de_codigo_posicion_cursor.end.column }}
+                                    </span>
+                                    <span> | </span>
+                                    <span>
+                                        Pos: {{ editor_de_codigo_posicion_cursor.start.offset }}-{{ editor_de_codigo_posicion_cursor.end.offset }}
+                                    </span>
+                                </b>
+                            </div>
+                        </template>
+                    </div>
+                    <div style="flex: 1; min-width: 40px;" class="nowrap">
+                        <div title="Alternar consola" class="icono_contextual fondo_blanco" v-on:click="alternar_consola" style="max-height: 18px; padding-top: 7px;">
+                            Console
+                        </div>
                     </div>
                 </div>
             </div>
@@ -207,4 +216,5 @@
     </div>
     <windows-port :contexto="this"></windows-port>
     <c-dialogs :contexto="this"></c-dialogs>
+    <console-hooker :contexto="this"></console-hooker>
 </div>

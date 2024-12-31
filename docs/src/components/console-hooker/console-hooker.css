@@ -1,0 +1,25 @@
+.console-hooker.hide {
+    display: none;
+}
+.console-hooker .console_viewer {
+    margin: 0px;
+    padding: 0px;
+    z-index: 1000;
+    position: absolute;
+    top: auto;
+    right: auto;
+    left: 0;
+    bottom: 0;
+    padding: 4px;
+    max-width: 80%;
+    
+}
+.console-hooker .console_box {
+    max-height: 120px;
+    overflow: scroll;
+    font-size: 9px;
+    color: #bf43;
+    border: 1px solid #bf43;
+    border-radius: 2pt;
+    opacity: 0.5;
+}

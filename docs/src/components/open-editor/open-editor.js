@@ -539,6 +539,10 @@ Vue.component("open-editor", {
         }
       });
     },
+    alternar_consola() {
+      this.$consoleHooker.is_shown = !this.$consoleHooker.is_shown;
+      this.$consoleHooker.$forceUpdate(true);
+    }
   },
   watch: {
     iconos_izquierdos(nuevo_valor) {

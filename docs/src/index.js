@@ -4,15 +4,15 @@ window.process = {
         NODE_ENV: (window.location.href.startsWith("https") ? "production" : "test")
     }
 };
-process.env.NODE_ENV = "production";
 process.env.NODE_ENV = "test";
+process.env.NODE_ENV = "production";
 const main = async function () {
     try {
         Import_scripts: {
             window.startIntersitialCountdown();
             if (process.env.NODE_ENV === "test") {
                 // importer.setTotal(64);
-                importer.setTotal(55);
+                importer.setTotal(60);
                 importer.setTimeout(1000 * 2);
                 First_wave: {
                     await Promise.all([
@@ -31,6 +31,7 @@ const main = async function () {
                         importer.scriptSrc("src/external/marked.js"),
                         importer.scriptSrc("src/external/html2pdf.bundle.js"),
                         importer.scriptSrc("src/external/pegjs.js"),
+                        importer.scriptSrc("src/components/console-hooker/console-hooker-api.js"),
                         importer.scriptSrc("src/external/conductometria.bundle.js"),
                     ]);
                 }
@@ -46,6 +47,7 @@ const main = async function () {
                         importer.importVueComponent("src/components/app/app"),
                         importer.importVueComponent("src/components/c-dialog/c-dialog"),
                         importer.importVueComponent("src/components/c-badge/c-badge"),
+                        importer.importVueComponent("src/components/console-hooker/console-hooker"),
                     ]);
                 }
                 Third_synchronous_wave: {
@@ -74,6 +76,7 @@ const main = async function () {
         Create_app: {
             const processInterface = new window.ProcessInterface();
             const processManager = new processInterface.ProcessManager();
+            Vue.prototype.$consoleHooker = undefined;
             Vue.prototype.$process = {};
             Vue.prototype.$process.interface = processInterface;
             Vue.prototype.$process.manager = processManager;

@@ -13,5 +13,6 @@ module.exports = [
   __dirname + "/src/external/process-interface.js",
   __dirname + "/src/external/marked.js",
   __dirname + "/src/external/html2pdf.bundle.js",
+  __dirname + "/src/components/console-hooker/console-hooker-api.js",
   __dirname + "/dist/components.js",
 ]

@@ -11,8 +11,8 @@
 [x] soporte para pegjs en botón de compilar
 [x] retocando algo de estilos
 [x] logger trace en open-editor
-[ ] método para importar componentes Vue.js v2 desde ufs
 [ ] parche console.log a badge
+[ ] método para importar componentes Vue.js v2 desde ufs
 [ ] api de badges
 [ ] botón de snippets
 [ ] botón de code para códigos:
