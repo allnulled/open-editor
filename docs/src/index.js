@@ -11,7 +11,7 @@ const main = async function () {
         Import_scripts: {
             window.startIntersitialCountdown();
             if (process.env.NODE_ENV === "test") {
-                // importer.setTotal(64);
+                // importer.setTotal(64); 
                 importer.setTotal(68);
                 importer.setTimeout(1000 * 2);
                 First_wave: {
