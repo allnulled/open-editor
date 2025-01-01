@@ -4,13 +4,15 @@ window.process = {
         NODE_ENV: (window.location.href.startsWith("https") ? "production" : "test")
     }
 };
+window.process.env.NODE_ENV = "production";
+window.process.env.NODE_ENV = "test";
 const main = async function () {
     try {
         Import_scripts: {
             window.startIntersitialCountdown();
             if (process.env.NODE_ENV === "test") {
                 // importer.setTotal(64);
-                importer.setTotal(60);
+                importer.setTotal(67);
                 importer.setTimeout(1000 * 2);
                 First_wave: {
                     await Promise.all([
@@ -30,11 +32,17 @@ const main = async function () {
                         importer.scriptSrc("src/external/html2pdf.bundle.js"),
                         importer.scriptSrc("src/external/pegjs.js"),
                         importer.scriptSrc("src/components/console-hooker/console-hooker-api.js"),
+                        importer.scriptSrc("src/external/highlight/es/highlight.js"),
                         importer.scriptSrc("src/external/conductometria.bundle.js"),
                     ]);
                 }
                 Second_wave: {
                     await Promise.all([
+                        importer.scriptSrc("src/external/highlight/languages/css.js"),
+                        importer.scriptSrc("src/external/highlight/languages/javascript.js"),
+                        importer.scriptSrc("src/external/highlight/languages/xml.js"),
+                        importer.scriptSrc("src/external/highlight/languages/scss.js"),
+                        importer.scriptSrc("src/external/highlight/languages/markdown.js"),
                         importer.scriptSrc("src/components/c-badges/c-badges.js"),
                         importer.importVueComponent("src/components/c-dialogs/c-dialogs"),
                         importer.importVueComponent("src/components/open-editor/windows-port"),
@@ -52,6 +60,7 @@ const main = async function () {
                     ///////////////////////////////////////////////////////
                     await importer.linkStylesheet("src/components/home-page/wikipedia.css");
                     await importer.linkStylesheet("src/external/win7.css");
+                    await importer.linkStylesheet("src/external/highlight/styles/default.css");
                     await importer.scriptSrc("src/external/refresher.js");
                 }
             } else if (process.env.NODE_ENV === "production") {
@@ -79,6 +88,7 @@ const main = async function () {
             Vue.prototype.$process.interface = processInterface;
             Vue.prototype.$process.manager = processManager;
             Vue.prototype.$vue = window.Vue;
+            Vue.prototype.$codeHighlighter = window.hljs;
             Vue.prototype.$markdown = window.marked;
             Vue.prototype.$pdf = { save: window.html2pdf };
             Vue.prototype.$peg = window.PEG;

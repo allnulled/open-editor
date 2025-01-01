@@ -591,8 +591,47 @@ Vue.component("open-editor", {
       });
     },
     alternar_consola() {
+      this.$logger.trace("open-editor][alternar_consola", arguments);
       this.$consoleHooker.is_shown = !this.$consoleHooker.is_shown;
       this.$consoleHooker.$forceUpdate(true);
+    },
+    preparar_codigo_visualizado(code, language = "javascript") {
+      return `<pre class="language-${language}">${this.$codeHighlighter.highlight(code, { language }).value}</pre>`;
+    },
+    ver_fuente_actual() {
+      this.$logger.trace("open-editor][ver_fuente_actual", arguments);
+      const fuente = this.nodo_actual_contenido_de_fichero;
+      const generadorDialogo = () => {
+        return () => {
+          return {
+            data() {
+              return { fuente }
+            },
+            mounted() {
+              
+            }
+          }
+        };
+      }
+      if(this.nodo_actual.endsWith(".js")) {
+        const colorizedCodeHtml = this.preparar_codigo_visualizado(fuente, "javascript");
+        this.$windowsPort.createWindow("Ver fuente de JavaScript", colorizedCodeHtml);
+      } else if(this.nodo_actual.endsWith(".css")) {
+        const colorizedCodeHtml = this.preparar_codigo_visualizado(fuente, "css");
+        this.$windowsPort.createWindow("Ver fuente de CSS", colorizedCodeHtml);
+      } else if(this.nodo_actual.endsWith(".html")) {
+        const colorizedCodeHtml = this.preparar_codigo_visualizado(fuente, "html");
+        this.$windowsPort.createWindow("Ver fuente de HTML", colorizedCodeHtml);
+      } else if(this.nodo_actual.endsWith(".md")) {
+        const colorizedCodeHtml = this.preparar_codigo_visualizado(fuente, "md");
+        this.$windowsPort.createWindow("Ver fuente de MD", colorizedCodeHtml);
+      } else if(this.nodo_actual.endsWith(".json")) {
+        const colorizedCodeHtml = this.preparar_codigo_visualizado(fuente, "json");
+        this.$windowsPort.createWindow("Ver fuente de JSON", colorizedCodeHtml);
+      } else if(this.nodo_actual.endsWith(".json")) {
+        const colorizedCodeHtml = this.preparar_codigo_visualizado(fuente, "json");
+        this.$windowsPort.createWindow("Ver fuente de SCSS", colorizedCodeHtml);
+      }
     }
   },
   watch: {
