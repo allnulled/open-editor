@@ -752,7 +752,7 @@ code.hljs {
 .open-editor .contenedor_en_panel_superior {
     border-radius: 0pt;
     height: 100%;
-    padding-top: 10px;
+    padding-top: 5px;
     padding-left: 5px;
 }
 
@@ -765,10 +765,11 @@ code.hljs {
     font-family: Arial;
     overflow: hidden;
     text-wrap: nowrap;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 0px;
+    padding-right: 0px;
     font-style: italic;
     font-weight: lighter;
+    font-size: 10px;
 }
 .open-editor .textbox_contextual.contexto_inferior {
     color: white;

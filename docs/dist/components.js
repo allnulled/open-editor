@@ -928,14 +928,13 @@ Vue.component("open-editor", {
                         <template v-if="nodo_actual_es_fichero && editor_de_codigo_posicion_cursor">
                             <div class="textbox_contextual contexto_inferior nowrap">
                                 <b class="">
-                                    <span>
+                                    <div>
                                         Line: {{ editor_de_codigo_posicion_cursor.start.line }}:{{ editor_de_codigo_posicion_cursor.start.column
                                         }}-{{ editor_de_codigo_posicion_cursor.end.line }}:{{ editor_de_codigo_posicion_cursor.end.column }}
-                                    </span>
-                                    <span> | </span>
-                                    <span>
+                                    </div>
+                                    <div>
                                         Pos: {{ editor_de_codigo_posicion_cursor.start.offset }}-{{ editor_de_codigo_posicion_cursor.end.offset }}
-                                    </span>
+                                    </div>
                                 </b>
                             </div>
                         </template>
