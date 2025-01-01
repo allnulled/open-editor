@@ -74471,8 +74471,8 @@ Vue.component("open-editor", {
                     </div>
                 </div>
                 <div style="flex: 1; min-width: 40px;" class="nowrap">
-                    <div title="Comandos rápidos" class="icono_contextual fondo_rojo" v-on:click="alternar_comandos_rapidos" style="border-radius: 50%;">
-                        Bin!
+                    <div title="Comandos rápidos" class="icono_contextual fondo_amarillo boton_bin" v-on:click="alternar_comandos_rapidos" style="border-radius: 50%;">
+                        <span>Bin!</span>
                     </div>
                 </div>
             </div>
@@ -74524,6 +74524,11 @@ Vue.component("open-editor", {
                             title="Descargar como fichero"
                             v-on:click="descargar_fichero">
                             Get
+                        </div>
+                        <div class="icono_contextual fondo_naranja"
+                            title="Ver el fuente"
+                            v-on:click="() => ver_fuente_actual()">
+                            Code
                         </div>
                     </template>
                 </div>
@@ -74597,11 +74602,6 @@ Vue.component("open-editor", {
                             v-on:click="() => visualizar_fichero_actual()">
                             View
                         </div>
-                        <div class="icono_contextual fondo_naranja"
-                            title="Ver el fuente"
-                            v-on:click="() => ver_fuente_actual()">
-                            Code
-                        </div>
                         <div class="icono_contextual fondo_rosa"
                             title="Formatea el código"
                             v-on:click="() => formatear_fichero_actual()">
@@ -74660,7 +74660,7 @@ Vue.component("open-editor", {
             <div class="panel_inferior">
                 <div style="display: flex; flex-direction: row;">
                     <div style="flex: 1; min-width: 40px;" class="nowrap">
-                        <div title="Acceso a procesos" class="icono_contextual fondo_naranja" v-on:click="alternar_acceso_a_procesos" style="max-height: 18px; padding-top: 7px;">
+                        <div title="Acceso a procesos" class="icono_contextual fondo_naranja icono_contextual_inferior" v-on:click="alternar_acceso_a_procesos">
                             Process
                         </div>
                     </div>
@@ -74682,12 +74682,12 @@ Vue.component("open-editor", {
                         </template>
                     </div>
                     <div style="flex: 1; min-width: 40px;" class="nowrap">
-                        <div title="Alternar consola" class="icono_contextual fondo_blanco" v-on:click="alternar_consola" style="max-height: 18px; padding-top: 7px;">
+                        <div title="Alternar consola" class="icono_contextual fondo_blanco icono_contextual_inferior" v-on:click="alternar_consola">
                             Console
                         </div>
                     </div>
                     <div style="flex: 1; min-width: 40px;" class="nowrap" v-if="nodo_actual_es_fichero">
-                        <div title="Snippets rápidos" class="icono_contextual fondo_azul" v-on:click="alternar_snippets_rapidos" style="max-height: 18px; padding-top: 7px;">
+                        <div title="Snippets rápidos" class="icono_contextual fondo_azul icono_contextual_inferior" v-on:click="alternar_snippets_rapidos">
                             Snippet
                         </div>
                     </div>
