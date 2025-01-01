@@ -4,15 +4,15 @@ window.process = {
         NODE_ENV: (window.location.href.startsWith("https") ? "production" : "test")
     }
 };
-window.process.env.NODE_ENV = "production";
 window.process.env.NODE_ENV = "test";
+window.process.env.NODE_ENV = "production";
 const main = async function () {
     try {
         Import_scripts: {
             window.startIntersitialCountdown();
             if (process.env.NODE_ENV === "test") {
                 // importer.setTotal(64);
-                importer.setTotal(67);
+                importer.setTotal(68);
                 importer.setTimeout(1000 * 2);
                 First_wave: {
                     await Promise.all([
@@ -40,6 +40,7 @@ const main = async function () {
                     await Promise.all([
                         importer.scriptSrc("src/external/highlight/languages/css.js"),
                         importer.scriptSrc("src/external/highlight/languages/javascript.js"),
+                        importer.scriptSrc("src/external/highlight/languages/json.js"),
                         importer.scriptSrc("src/external/highlight/languages/xml.js"),
                         importer.scriptSrc("src/external/highlight/languages/scss.js"),
                         importer.scriptSrc("src/external/highlight/languages/markdown.js"),

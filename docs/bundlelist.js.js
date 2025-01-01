@@ -15,6 +15,12 @@ module.exports = [
   __dirname + "/src/external/html2pdf.bundle.js",
   __dirname + "/src/external/pegjs.js",
   __dirname + "/src/external/highlight/es/highlight.js",
+  __dirname + "/src/external/highlight/languages/css.js",
+  __dirname + "/src/external/highlight/languages/javascript.js",
+  __dirname + "/src/external/highlight/languages/json.js",
+  __dirname + "/src/external/highlight/languages/markdown.js",
+  __dirname + "/src/external/highlight/languages/scss.js",
+  __dirname + "/src/external/highlight/languages/xml.js",
   __dirname + "/src/components/console-hooker/console-hooker-api.js",
   __dirname + "/dist/components.js",
 ]
