@@ -260,6 +260,12 @@
     margin: 0px;
 }
 
+.open-editor pre.code_viewer {
+    margin: 0;
+    padding: 8px;
+    overflow: scroll;
+}
+
 .open-editor .flex_row { display: flex; flex-direction: row; }
 .open-editor .flex_column { display: flex; flex-direction: column; }
 .open-editor .flex_1 { flex: 1; }

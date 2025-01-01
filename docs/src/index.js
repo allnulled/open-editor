@@ -4,8 +4,6 @@ window.process = {
         NODE_ENV: (window.location.href.startsWith("https") ? "production" : "test")
     }
 };
-window.process.env.NODE_ENV = "test";
-window.process.env.NODE_ENV = "production";
 const main = async function () {
     try {
         Import_scripts: {
@@ -90,6 +88,7 @@ const main = async function () {
             Vue.prototype.$process.manager = processManager;
             Vue.prototype.$vue = window.Vue;
             Vue.prototype.$codeHighlighter = window.hljs;
+            Vue.prototype.$codeBeautifier = window.beautifier;
             Vue.prototype.$markdown = window.marked;
             Vue.prototype.$pdf = { save: window.html2pdf };
             Vue.prototype.$peg = window.PEG;

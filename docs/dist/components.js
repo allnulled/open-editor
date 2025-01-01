@@ -721,12 +721,17 @@ Vue.component("open-editor", {
   template: `<div class="open-editor">
     <div class="contenedor_de_panel_fijo">
         <div class="panel_fijo">
-            <div class="panel_superior">
-                <div class="contenedor_en_panel_superior">
+            <div class="panel_superior" style="display: flex; flex-direction: row;">
+                <div class="contenedor_en_panel_superior" style="flex: 100;">
                     <div class="textbox_contextual nowrap">
                         <b class="">
                             {{ nodo_actual }}
                         </b>
+                    </div>
+                </div>
+                <div style="flex: 1; min-width: 40px;" class="nowrap">
+                    <div title="Comandos rápidos" class="icono_contextual fondo_rojo" v-on:click="alternar_comandos_rapidos" style="border-radius: 50%;">
+                        Bin!
                     </div>
                 </div>
             </div>
@@ -913,6 +918,11 @@ Vue.component("open-editor", {
             </div>
             <div class="panel_inferior">
                 <div style="display: flex; flex-direction: row;">
+                    <div style="flex: 1; min-width: 40px;" class="nowrap">
+                        <div title="Acceso a procesos" class="icono_contextual fondo_naranja" v-on:click="alternar_acceso_a_procesos" style="max-height: 18px; padding-top: 7px;">
+                            Process
+                        </div>
+                    </div>
                     <div class="contenedor_en_panel_superior"
                         style="flex: 100;">
                         <template v-if="nodo_actual_es_fichero && editor_de_codigo_posicion_cursor">
@@ -933,6 +943,11 @@ Vue.component("open-editor", {
                     <div style="flex: 1; min-width: 40px;" class="nowrap">
                         <div title="Alternar consola" class="icono_contextual fondo_blanco" v-on:click="alternar_consola" style="max-height: 18px; padding-top: 7px;">
                             Console
+                        </div>
+                    </div>
+                    <div style="flex: 1; min-width: 40px;" class="nowrap" v-if="nodo_actual_es_fichero">
+                        <div title="Snippets rápidos" class="icono_contextual fondo_azul" v-on:click="alternar_snippets_rapidos" style="max-height: 18px; padding-top: 7px;">
+                            Snippet
                         </div>
                     </div>
                 </div>
@@ -1313,6 +1328,35 @@ Vue.component("open-editor", {
     },
     cargar_source() {
       this.$logger.trace("open-editor][cargar_source", arguments);
+      Comprobaciones_para_asegurar_el_kernel: {
+        if (!this.$ufs.exists("/kernel")) {
+          this.$ufs.make_directory("/kernel");
+        }
+        if (!this.$ufs.exists("/kernel/components")) {
+          this.$ufs.make_directory("/kernel/components");
+        }
+        if (!this.$ufs.exists("/kernel/commands")) {
+          this.$ufs.make_directory("/kernel/commands");
+        }
+        if (!this.$ufs.exists("/kernel/snippets")) {
+          this.$ufs.make_directory("/kernel/snippets");
+        }
+        if (!this.$ufs.exists("/kernel/source.js")) {
+          this.$ufs.write_file("/kernel/source.js", this.$codeBeautifier.js(`
+            const fecha = new Date();
+            const hora = (fecha.getHours() + "").padStart(2, '0');
+            const minuto = (fecha.getMinutes() + "").padStart(2, '0');
+            const dia = (fecha.getDate() + "").padStart(2, '0');
+            const mes = ((fecha.getMonth() + 1) + "").padStart(2, '0');
+            const anio = (fecha.getFullYear() + "").padStart(4, '0');
+
+            await this.$dialogs.notificar({
+              titulo: "¡Bienvenid@ a open-editor!",
+              pregunta: \`Son las \${hora}:\${minuto} del día \${dia}/\${mes}/\${anio}.\`
+            });
+          `));
+        }
+      }
       return this.import("/kernel/source.js");
     },
     async import(file) {
@@ -1538,7 +1582,7 @@ Vue.component("open-editor", {
       this.$consoleHooker.$forceUpdate(true);
     },
     preparar_codigo_visualizado(code, language = "javascript") {
-      return `<pre class="language-${language}">${this.$codeHighlighter.highlight(code, { language }).value}</pre>`;
+      return `<pre class="code_viewer language-${language}">${this.$codeHighlighter.highlight(code, { language }).value}</pre>`;
     },
     ver_fuente_actual() {
       this.$logger.trace("open-editor][ver_fuente_actual", arguments);
@@ -1550,30 +1594,39 @@ Vue.component("open-editor", {
               return { fuente }
             },
             mounted() {
-              
+
             }
           }
         };
       }
-      if(this.nodo_actual.endsWith(".js")) {
+      if (this.nodo_actual.endsWith(".js")) {
         const colorizedCodeHtml = this.preparar_codigo_visualizado(fuente, "javascript");
         this.$windowsPort.createWindow("Ver fuente de JavaScript", colorizedCodeHtml);
-      } else if(this.nodo_actual.endsWith(".css")) {
+      } else if (this.nodo_actual.endsWith(".css")) {
         const colorizedCodeHtml = this.preparar_codigo_visualizado(fuente, "css");
         this.$windowsPort.createWindow("Ver fuente de CSS", colorizedCodeHtml);
-      } else if(this.nodo_actual.endsWith(".html")) {
+      } else if (this.nodo_actual.endsWith(".html")) {
         const colorizedCodeHtml = this.preparar_codigo_visualizado(fuente, "html");
         this.$windowsPort.createWindow("Ver fuente de HTML", colorizedCodeHtml);
-      } else if(this.nodo_actual.endsWith(".md")) {
+      } else if (this.nodo_actual.endsWith(".md")) {
         const colorizedCodeHtml = this.preparar_codigo_visualizado(fuente, "md");
         this.$windowsPort.createWindow("Ver fuente de MD", colorizedCodeHtml);
-      } else if(this.nodo_actual.endsWith(".json")) {
+      } else if (this.nodo_actual.endsWith(".json")) {
         const colorizedCodeHtml = this.preparar_codigo_visualizado(fuente, "json");
         this.$windowsPort.createWindow("Ver fuente de JSON", colorizedCodeHtml);
-      } else if(this.nodo_actual.endsWith(".json")) {
+      } else if (this.nodo_actual.endsWith(".json")) {
         const colorizedCodeHtml = this.preparar_codigo_visualizado(fuente, "json");
         this.$windowsPort.createWindow("Ver fuente de SCSS", colorizedCodeHtml);
       }
+    },
+    alternar_acceso_a_procesos() {
+      this.$logger.trace("open-editor][alternar_acceso_a_procesos", arguments);
+    },
+    alternar_snippets_rapidos() {
+      this.$logger.trace("open-editor][alternar_snippets_rapidos", arguments);
+    },
+    alternar_comandos_rapidos() {
+      this.$logger.trace("open-editor][alternar_comandos_rapidos", arguments);
     }
   },
   watch: {
@@ -1644,8 +1697,8 @@ Vue.component("open-editor", {
       };
       this.registrar_evento_de_redimensionar();
       this.evento_de_redimensionar();
-      await this.cargar_subnodos();
       await this.cargar_source();
+      await this.cargar_subnodos();
       await this.cargar_recurso_remoto();
       this.$window.oe = this;
     } catch (error) {

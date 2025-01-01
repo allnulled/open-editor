@@ -160,9 +160,9 @@
     z-index: 1000;
     position: absolute;
     top: auto;
-    right: auto;
-    left: 0;
-    bottom: 0;
+    right: 40px;
+    left: 39px;
+    bottom: 36px;
     padding: 4px;
     max-width: 80%;
     
@@ -436,6 +436,12 @@
     list-style-type: none;
     padding: 0px;
     margin: 0px;
+}
+
+.open-editor pre.code_viewer {
+    margin: 0;
+    padding: 8px;
+    overflow: scroll;
 }
 
 .open-editor .flex_row { display: flex; flex-direction: row; }
