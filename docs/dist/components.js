@@ -1249,6 +1249,23 @@ Vue.component("open-editor", {
             titulo: "Compilación exitosa",
             pregunta: "Tu fichero de html compilado se encuentra en:\n" + ficheroHtml
           });
+          //
+        } else if (this.nodo_actual.endsWith(".any")) {
+          // Compilar anylang a json:
+          const contenidoAny = this.nodo_actual_contenido_de_fichero;
+          const contenidoJson = this.$anyParser.parse(contenidoAny);
+          const ficheroJson = this.nodo_actual.replace(/\.any$/g, ".json");
+          await this.$ufs.write_file(ficheroJson, JSON.stringify(contenidoJson, null, 2));
+          //
+        } else if (this.nodo_actual.endsWith(".jsont")) {
+          // Compilar jsontyped a json:
+          const contenidoJsont = this.nodo_actual_contenido_de_fichero;
+          const astJsont = this.$jsonTyped.parser.parse(contenidoJsont);
+          const jsontReducers = await this.$ufs.require("/kernel/jsont/reducers/index.js");
+          const contenidoJson = this.$jsonTyped.reducer.reduce(astJsont, jsontReducers);
+          const ficheroJson = this.nodo_actual.replace(/\.jsont$/g, ".json");
+          await this.$ufs.write_file(ficheroJson, contenidoJson);
+          //
         } else if (this.nodo_actual.endsWith(".pegjs")) {
           // Compilar de pegjs a js:
           const contenidoPegjs = this.nodo_actual_contenido_de_fichero;
@@ -1400,6 +1417,32 @@ Vue.component("open-editor", {
         }
         if (!this.$ufs.exists("/kernel/symbols")) {
           this.$ufs.make_directory("/kernel/symbols");
+        }
+        if (!this.$ufs.exists("/kernel/jsont")) {
+          this.$ufs.make_directory("/kernel/jsont");
+        }
+        if (!this.$ufs.exists("/kernel/jsont/reducers")) {
+          this.$ufs.make_directory("/kernel/jsont/reducers");
+        }
+        if (!this.$ufs.exists("/kernel/jsont/reducers/index.js")) {
+          this.$ufs.write_file("/kernel/jsont/reducers/index.js", this.$codeBeautifier.js(`return [
+            function (node) {
+              if (node.$type === "sumar") {
+                return node.$operands.reduce((out, it) => {
+                  out += node[it];
+                  return out;
+                }, 0);
+              }
+            },
+            function (node) {
+              if (node.$type === "restar") {
+                return node.$operands.reduce((out, it) => {
+                  out -= node[it];
+                  return out;
+                }, 0);
+              }
+            },
+          ]`));
         }
         if (!this.$ufs.exists("/kernel/source.js")) {
           this.$ufs.write_file("/kernel/source.js", this.$codeBeautifier.js(`
