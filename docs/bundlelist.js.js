@@ -21,6 +21,7 @@ module.exports = [
   __dirname + "/src/external/highlight/languages/markdown.js",
   __dirname + "/src/external/highlight/languages/scss.js",
   __dirname + "/src/external/highlight/languages/xml.js",
+  __dirname + "/src/external/anylang.js",
   __dirname + "/src/components/console-hooker/console-hooker-api.js",
   __dirname + "/dist/components.js",
 ]

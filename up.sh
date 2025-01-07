@@ -21,4 +21,7 @@ git commit -m "$commit_message"
 echo "Pushing to remote repository..."
 git push
 
+# Llama a script opcional de exportar proyecto completo a otras rutas:
+bash export.sh
+
 echo "Done!"

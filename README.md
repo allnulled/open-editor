@@ -21,7 +21,7 @@ git clone https://github.com/allnulled/open-editor.git .
 Esta es una lista de todos los proyectos que se inyectan en algún momento y viven en el `src/externals`:
 
 - [vue-v2.js](https://v2.vuejs.org/v2/guide/) para componentes
-- [socket.io-client.js@4.8.1](./docs/src/external/socket.io-client.js) para comunicaciones dúplex
+- [socket.io-client.js@4.8.1](https://socket.io) para comunicaciones dúplex
 - [sql-wasm.js](https://github.com/sql-js/sql.js) para tener soporte de SQL
 - [sql-wasm.wasm](https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.2.1/dist/sql-wasm.wasm) para los bindings a bajo nivel
 - [beautifier](https://github.com/beautifier/js-beautify) para embellecer el código js, css y html.
@@ -39,14 +39,15 @@ Esta es una lista de todos los proyectos que se inyectan en algún momento y viv
 - [@allnulled/sqlite-polyfill](https://github.com/allnulled/sqlite-polyfill) para parchear cross-env el SQL.
 - [@allnulled/sqlite-data-system](https://github.com/allnulled/sqlite-data-system/) para ampliar lo básico de los sistemas de datos.
 - [@allnulled/universal-store](https://github.com/allnulled/universal-store) para persistencia reactiva con localStorage (con `docs/src/external/store.unbundled.js`).
+- [@allnulled/anylang](https://github.com/allnulled/anylang) como párser rápido genérico.
 - refresher.js para refresco automático, personalizado y personalizable.
 
 ### APIs internas
 
 Además de todas estas, se inyectan algunos componentes en `src/components`. Aquí están:
 - La API del editor en `open-editor`
-- La API de diálogos entre en `c-dialog` y `c-dialogs`
-- La API de notificaciones instantáneas entre en `c-badge` y `c-badges`
+- La API de diálogos entre `c-dialog` y `c-dialogs`
+- La API de notificaciones instantáneas entre en `c-badge` y `c-badges` (prematuro)
 
 
 
@@ -75,13 +76,14 @@ window.process = {
         NODE_ENV: (window.location.href.startsWith("https") ? "production" : "test")
     }
 };
+window.process.env.NODE_ENV = "test";
 const main = async function () {
     try {
         Import_scripts: {
             window.startIntersitialCountdown();
             if (process.env.NODE_ENV === "test") {
-                // importer.setTotal(64);
-                importer.setTotal(60);
+                // importer.setTotal(64); 
+                importer.setTotal(71);
                 importer.setTimeout(1000 * 2);
                 First_wave: {
                     await Promise.all([
@@ -101,11 +103,21 @@ const main = async function () {
                         importer.scriptSrc("src/external/html2pdf.bundle.js"),
                         importer.scriptSrc("src/external/pegjs.js"),
                         importer.scriptSrc("src/components/console-hooker/console-hooker-api.js"),
+                        importer.scriptSrc("src/external/highlight/es/highlight.js"),
                         importer.scriptSrc("src/external/conductometria.bundle.js"),
+                        importer.scriptSrc("cordova.js").catch(error => false) // Try to import cordova
                     ]);
                 }
                 Second_wave: {
                     await Promise.all([
+                        importer.scriptSrc("src/external/cordova-payload.js").catch(error => false), // Try to import cordova payload silently for the web not to crash
+                        importer.scriptSrc("src/external/highlight/languages/css.js"),
+                        importer.scriptSrc("src/external/highlight/languages/javascript.js"),
+                        importer.scriptSrc("src/external/highlight/languages/json.js"),
+                        importer.scriptSrc("src/external/highlight/languages/xml.js"),
+                        importer.scriptSrc("src/external/highlight/languages/scss.js"),
+                        importer.scriptSrc("src/external/highlight/languages/markdown.js"),
+                        importer.scriptSrc("src/external/anylang.js"),
                         importer.scriptSrc("src/components/c-badges/c-badges.js"),
                         importer.importVueComponent("src/components/c-dialogs/c-dialogs"),
                         importer.importVueComponent("src/components/open-editor/windows-port"),
@@ -123,7 +135,9 @@ const main = async function () {
                     ///////////////////////////////////////////////////////
                     await importer.linkStylesheet("src/components/home-page/wikipedia.css");
                     await importer.linkStylesheet("src/external/win7.css");
-                    await importer.scriptSrc("src/external/refresher.js");
+                    await importer.linkStylesheet("src/external/highlight/styles/default.css");
+                    await importer.scriptSrc("src/external/refresher.js"); // only test
+                    await importer.scriptSrc("src/external/remotable.js"); // only test
                 }
             } else if (process.env.NODE_ENV === "production") {
                 importer.setTotal(1);
@@ -150,9 +164,12 @@ const main = async function () {
             Vue.prototype.$process.interface = processInterface;
             Vue.prototype.$process.manager = processManager;
             Vue.prototype.$vue = window.Vue;
+            Vue.prototype.$codeHighlighter = window.hljs;
+            Vue.prototype.$codeBeautifier = window.beautifier;
             Vue.prototype.$markdown = window.marked;
             Vue.prototype.$pdf = { save: window.html2pdf };
             Vue.prototype.$peg = window.PEG;
+            Vue.prototype.$anyParser = window.AnylangParser;
             Vue.prototype.$dialogs = undefined;
             Vue.prototype.$ufs = undefined;
             Vue.prototype.$logger = window.BasicLogger.create("app", { trace: true });
@@ -392,7 +409,6 @@ De hecho, esto sucede en el `mounted` de `src/components/open-editor/open-editor
 Sabes qué, mejor dejo el `mounted` aquí.
 
 ```js
-
   async mounted() {
     try {
       this.$logger.trace("open-editor][mounted", arguments);
@@ -522,30 +538,49 @@ Otro dato importante es que los estilos cargados con `$ufs.requireVueComponent` 
 
 Con el editor puedes, de forma relativamente intuitiva:
 
- - navegar por el árbol de ficheros
- - crear un fichero: botón «File++»
- - crear un directorio: botón «Dir++»
- - abrir un fichero: botón del nombre del fichero
- - guardar un fichero: botón «Save»
- - cargar un fichero: botón «Load»
- - renombrar un fichero: botón «Rename»
- - copiar un fichero a otro directorio: botón «Copy»
- - ejecutar un fichero: botón «Run». Solo funciona con los ficheros:
-    - *.js.
- - compilar un fichero: botón «Compile». Solo funciona con los ficheros:
-    - *.md los pasa a *.html
-    - *.pegjs los pasa a *.js
- - visualizar un fichero: botón «View».
-    - *.md: visualiza el html como vue@2
-    - *.html: visualiza como vue@2
- - formatear un fichero: botón «Format». Solo funciona con los ficheros:
-    - *.js
-    - *.css
-    - *.html
- - incrementar tamaño de fuente: botón «Font++».
- - decrementar tamaño de fuente: botón «Font--».
- - cambiar estilo de fuente: botón «Font».
- - exportar un fichero a URL: botón «Export».
+ - cuando estás navegando por el árbol de ficheros:
+    - navegar por el árbol de ficheros
+    - crear un fichero: botón «File++»
+    - crear un directorio: botón «Dir++»
+    - abrir un fichero: botón del nombre del fichero
+    - abrir un directorio: botón del nombre del directorio
+ - cuando abres un fichero:
+    - guardar un fichero: botón «Save»
+    - cargar un fichero: botón «Load»
+    - renombrar un fichero: botón «Rename»
+    - eliminar un fichero: botón «Delete»
+    - copiar un fichero a otro directorio: botón «Copy»
+    - ejecutar un fichero: botón «Run». Solo funciona con los ficheros:
+       - *.js.
+    - compilar un fichero: botón «Compile». Solo funciona con los ficheros:
+       - *.md los pasa a *.html
+       - *.pegjs los pasa a *.js
+       - [*.any](https://github.com/allnulled/anylang) los pasa a *.json 
+       - [*.jsont](https://github.com/allnulled/jsontyped) los pasa a *.json
+    - visualizar un fichero: botón «View».
+       - *.md: visualiza el html como vue@2
+       - *.html: visualiza como vue@2
+    - visualizar código coloreado: botón «Code».
+       - *.js
+       - *.css
+       - *.html
+    - formatear un fichero: botón «Format». Solo funciona con los ficheros:
+       - *.js
+       - *.css
+       - *.html
+    - incrementar tamaño de fuente: botón «Font++».
+    - decrementar tamaño de fuente: botón «Font--».
+    - cambiar estilo de fuente: botón «Font».
+    - exportar un fichero a URL: botón «Link».
+    - importar un nodo del árbol de ficheros: botón «&lt;&lt; JSON».
+    - exportar un nodo del árbol de ficheros: botón «&gt;&gt; JSON».
+    - descargar en un fichero: botón «Get».
+    - abrir un visualizador del log de consola: botón «Console».
+    - abrir un visualizador de los procesos abiertos: botón «Process».
+    - abrir un panel de comandos rápidos: botón «Bin!».
+    - abrir un panel de snippets rápidos: botón «Snippet».
+
+Y dentro puedes encontrarte más funcionalidades. Por ejemplo, cuando visualizas un `html` o un `md`, te aparece una ventana con el `html` (bueno, `vue@2` realmente) resultante, también aparecen 2 botones: «Descargar texto» y «Descargar PDF». Los 2 funcionan, pero cumplen cometidos distintos: el texto es para que tengas un mp3 rápidamente (con programas externos, ahí desde el navegador no, desde Android puede que se haga algo), y el PDF como es solo una imagen, para que puedas seguirlo.
 
 Por tanto, podemos decir que el editor ofrece cierto soporte por defecto para ficheros:
 
@@ -554,17 +589,57 @@ Por tanto, podemos decir que el editor ofrece cierto soporte por defecto para fi
   - js
   - md
   - pegjs
+  - [@allnulled/anylang](https://github.com/allnulled/anylang) (como párser genérico)
+  - [@allnulled/jsontyped](https://github.com/allnulled/jsontyped) (como JSON tipable)
 
 Otras features más avanzadas:
 
- - puedes crear flujos de diálogo con await muy directo
- - puedes crear componentes html con vue.js v2 muy directo
+ - puedes crear flujos de diálogo con `await` muy directo
+ - puedes crear componentes html con `vue@2` muy directo
  - puedes visualizar código markdown, html o vue.js en un diálogo
  - puedes convertir código markdown, html o vue.js en formato PDF
 
-Las siguientes features por incorporar:
+Tienes muchas APIs. Ahora vamos con la app.
 
- - puedes exportar un nodo del árbol de ficheros a json
- - puedes importar un json a nodo del árbol de ficheros
- - puedes compilar sintaxis de pegjs/peggy y generar parsers
+## Aplicación móvil
+
+El editor tiene la capacidad de desplegarse como aplicación móvil también. Las features que se le otorgan son las mismas que las de la web, más:
+
+  - [`cordova`](#) para soporte de APIs de Android y otros, y puente entre V8 y Android.
+  - [`rhino`](#) para lo mismo, pero con puente entre V8 - JavaScript - Android.
+  - [`@allnulled/cordova-plugin-rhinobridge`](#) es el plugin necesario para puentear con `rhino`.
+
+El `cordova.js` es inyectado en la aplicación automáticamente silenciosamente, para no hacer ruido en la web, donde fallará.
+
+El `cordova-payload.js` es el que sí es visible e inyectamos nosotros. En este fichero, inyectamos cosas exclusivas de la app móvil, como:
+
+  - los eventos que nos permite `cordova`
+     - como al salir o entrar en la aplicación
+     - para que nos diga en un diálogo cuánto tiempo ha pasado
+  - los permisos que queremos pedir nada más empezar
+  - la inyección de la global `Vue.prototype.$android`, que solo estará disponible en móvil.
+  - no hay soporte para iOS, obviamente. Solo Android.
+
+Pero esto no se completaría en este proyecto, sino en este otro:
+
+  - [https://github.com/allnulled/open-editor-mobile](https://github.com/allnulled/open-editor-mobile) (que ahora mismo puede que ni exista)
+
+En lo que concierne al móvil, lo dejo en la carpeta `/build/mobile` del proyecto.
+
+## Otras cosas guapas
+
+El editor simula un entorno de Linux con [`this.$ufs`](https://github.com/allnulled/universal-file-system). Bueno, psé, se inspira en los nombres, más bien.
+
+Entonces, al cargar y en algunos puntos de la aplicación, utiliza datos que siempre irá a buscar a las mismas rutas especiales del `this.$ufs`.
+
+Esas rutas especiales, como desarrollador primero, me reservo el directorio `/kernel`. Yo las que haga, vamos, las empezaré por `/kernel/*` y siempre en inglés.
+
+Entonces, sabiendo esto, lo he hecho para que:
+
+ - al cargar, hace `this.$ufs.require` del `/kernel/source.js`. En este script te puedes dejar un diálogo de bienvenida fácilmente.
+ - al clicar el botón de «Bin!» se listan los scripts que haya bajo `/kernel/commands`.
+ - al clicar el botón de «Snippet» se listan los scripts que haya bajo `/kernel/snippets`.
+ - la carpeta `/kernel/components/` no es usada nunca por defecto. Pero te la reservo para que puedas crear tus componentes rápidamente, y progresar rápido.
+
+Luego, tienes que saber también que puedes usar `this.$windowPort.createWindow` para crear procesos, y luego puedes ir a ellos desde el botón de «Process». Esta feature, concretamente, no está terminada.
 

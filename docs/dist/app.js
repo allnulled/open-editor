@@ -74464,7 +74464,7 @@ Vue.component("open-editor", {
         <div class="panel_fijo">
             <div class="panel_superior" style="display: flex; flex-direction: row;">
                 <div class="contenedor_en_panel_superior" style="flex: 100;">
-                    <div class="textbox_contextual nowrap">
+                    <div class="textbox_contextual nowrap caja_de_ruta_abierta">
                         <b class="">
                             {{ nodo_actual }}
                         </b>
@@ -74482,21 +74482,21 @@ Vue.component("open-editor", {
                         <div class="icono_contextual fondo_blanco"
                             title="Volver a directorio"
                             v-on:click="() => subir_de_directorio()">
-                            Back
+                            <span>Back</span>
                         </div>
                     </template>
                     <template v-if="nodo_actual_es_fichero">
                         <div class="icono_contextual fondo_rosa"
                             title="Cargar estado actual"
                             v-on:click="() => cargar_fichero_actual()">
-                            Load
+                            <span>Load</span>
                         </div>
                     </template>
                     <template v-if="nodo_actual !== '/'">
                         <div class="icono_contextual fondo_verde"
                             title="Copiar fichero o directorio"
                             v-on:click="copiar_fichero_o_directorio">
-                            Copy
+                            <span>Copy</span>
                         </div>
                     </template>
                     <template v-if="nodo_actual_es_fichero">
@@ -74504,7 +74504,7 @@ Vue.component("open-editor", {
                             v-if="['/','/kernel'].indexOf(nodo_actual) === -1"
                             title="Renombrar"
                             v-on:click="renombrar_nodo_actual">
-                            Rename
+                            <span>Rename</span>
                         </div>
                         <open-editor-iconset :contexto="this"
                             ref="serie_iconos_izquierdos"
@@ -74513,22 +74513,22 @@ Vue.component("open-editor", {
                         <div class="icono_contextual fondo_negro letra_roja"
                             title="Eliminar"
                             v-on:click="() => eliminar_fichero_actual()">
-                            Delete
+                            <span>Delete</span>
                         </div>
                         <div class="icono_contextual fondo_rojo"
                             title="Exportar como URL"
                             v-on:click="exportar_como_url">
-                            Link
+                            <span>Link</span>
                         </div>
                         <div class="icono_contextual fondo_azul"
                             title="Descargar como fichero"
                             v-on:click="descargar_fichero">
-                            Get
+                            <span>Get</span>
                         </div>
                         <div class="icono_contextual fondo_naranja"
                             title="Ver el fuente"
                             v-on:click="() => ver_fuente_actual()">
-                            Code
+                            <span>Code</span>
                         </div>
                     </template>
                 </div>
@@ -74585,42 +74585,42 @@ Vue.component("open-editor", {
                         <div class="icono_contextual fondo_azul"
                             title="Guardar estado actual"
                             v-on:click="() => guardar_fichero_actual()">
-                            Save
+                            <span>Save</span>
                         </div>
                         <div class="icono_contextual fondo_rojo"
                             title="Ejecuta el código"
                             v-on:click="() => ejecutar_fichero_actual()">
-                            Run
+                            <span>Run</span>
                         </div>
                         <div class="icono_contextual fondo_naranja"
                             title="Compila el código"
                             v-on:click="() => compilar_fichero_actual()">
-                            Compile
+                            <span>Compile</span>
                         </div>
                         <div class="icono_contextual fondo_blanco"
                             title="Visualiza el código"
                             v-on:click="() => visualizar_fichero_actual()">
-                            View
+                            <span>View</span>
                         </div>
                         <div class="icono_contextual fondo_rosa"
                             title="Formatea el código"
                             v-on:click="() => formatear_fichero_actual()">
-                            Format
+                            <span>Format</span>
                         </div>
                         <div class="icono_contextual fondo_blanco"
                             title="Incrementa tamaño de fuente"
                             v-on:click="() => incrementar_tamanio_de_fuente(1)">
-                            Font++
+                            <span>Font++</span>
                         </div>
                         <div class="icono_contextual fondo_blanco"
                             title="Decrementa tamaño de fuente"
                             v-on:click="() => incrementar_tamanio_de_fuente(-1)">
-                            Font--
+                            <span>Font--</span>
                         </div>
                         <div class="icono_contextual fondo_verde"
                             title="Alterna familia de fuente"
                             v-on:click="() => alternar_familia_de_fuente()">
-                            Font
+                            <span>Font</span>
                         </div>
                         <open-editor-iconset :contexto="this"
                             ref="serie_iconos_derechos"
@@ -74631,28 +74631,28 @@ Vue.component("open-editor", {
                         <div class="icono_contextual fondo_azul"
                             title="Crea fichero"
                             v-on:click="crear_fichero">
-                            File++
+                            <span>File++</span>
                         </div>
                         <div class="icono_contextual fondo_verde"
                             title="Crea directorio"
                             v-on:click="crear_carpeta">
-                            Dir++
+                            <span>Dir++</span>
                         </div>
                         <div class="icono_contextual fondo_rojo"
                             v-if="['/','/kernel'].indexOf(nodo_actual) === -1"
                             title="Elimina directorio"
                             v-on:click="eliminar_carpeta_actual">
-                            Dir--
+                            <span>Dir--</span>
                         </div>
                         <div class="icono_contextual fondo_blanco"
                             title="Importar directorio como JSON"
                             v-on:click="importar_directorio_como_json">
-                            &lt;&lt; JSON
+                            <span>&lt;&lt; JSON</span>
                         </div>
                         <div class="icono_contextual fondo_blanco"
                             title="Exportar directorio como JSON"
                             v-on:click="exportar_directorio_como_json">
-                            &gt;&gt; JSON
+                            <span>&gt;&gt; JSON</span>
                         </div>
                     </template>
                 </div>
@@ -74697,6 +74697,61 @@ Vue.component("open-editor", {
     <windows-port :contexto="this"></windows-port>
     <c-dialogs :contexto="this"></c-dialogs>
     <console-hooker :contexto="this"></console-hooker>
+    <c-dialog ref="ventana_bin">
+        <template slot="title">Binarios rápidos</template>
+        <template slot="body">
+            <div>
+                <span v-for="file, file_index in binarios_rapidos" v-bind:key="'binary-' + file_index" style="margin-right: 4px; margin-bottom: 4px;">
+                    <button v-on:click="() => ejecutar_binario_rapido(file)">{{ file }}</button>
+                </span>
+            </div>
+        </template>
+        <template slot="bodyfooter">
+            <div style="text-align: right; padding: 4px;">
+                <button v-on:click="() => $refs.ventana_bin.close()">Cancelar</button>
+            </div>
+        </template>
+        <template slot="footer">
+            <span class="status-bar-field">Clicar a uno lo ejecutará directamente.</span>
+        </template>
+    </c-dialog>
+    <c-dialog ref="ventana_snippet">
+        <template slot="title">Snippets rápidos</template>
+        <template slot="body">
+            <div>
+                <span v-for="file, file_index in snippets_rapidos" v-bind:key="'snippet-' + file_index" style="margin-right: 4px; margin-bottom: 4px;">
+                    <button v-on:click="() => ejecutar_snippet_rapido(file)">{{ file }}</button>
+                </span>
+            </div>
+        </template>
+        <template slot="bodyfooter">
+            <div style="text-align: right; padding: 4px;">
+                <button v-on:click="() => $refs.ventana_snippet.close()">Cancelar</button>
+            </div>
+        </template>
+        <template slot="footer">
+            <span class="status-bar-field">Clicar a uno lo ejecutará directamente.</span>
+        </template>
+    </c-dialog>
+    <c-dialog ref="ventana_process">
+        <template slot="title">Procesos abiertos</template>
+        <template slot="body">
+            <div v-if="$windowsPort">
+                <span v-for="proceso, proceso_index in procesos_cargados" v-bind:key="'process-item-' + proceso_index" style="margin-right: 4px; margin-bottom: 4px;">
+                    <button v-on:click="() => abrir_ventana_de_proceso(proceso)">{{ proceso.title }}</button>
+                </span>
+            </div>
+        </template>
+        <template slot="bodyfooter">
+            <div style="text-align: right; padding: 4px;">
+                <button v-on:click="() => cargar_procesos()">Recargar</button>
+                <button v-on:click="() => $refs.ventana_process.close()">Cancelar</button>
+            </div>
+        </template>
+        <template slot="footer">
+            <span class="status-bar-field">Clicar a uno lo abrirá directamente.</span>
+        </template>
+    </c-dialog>
 </div>`,
   data() {
     return {
@@ -74713,7 +74768,10 @@ Vue.component("open-editor", {
       editor_de_codigo_tamanio_de_fuente: 10,
       editor_de_codigo_posicion_cursor: undefined,
       console_hooker: undefined,
-      console_logs: []
+      console_logs: [],
+      binarios_rapidos: [],
+      snippets_rapidos: [],
+      procesos_cargados: [],
     }
   },
   methods: {
@@ -75081,6 +75139,9 @@ Vue.component("open-editor", {
         if (!this.$ufs.exists("/kernel/snippets")) {
           this.$ufs.make_directory("/kernel/snippets");
         }
+        if (!this.$ufs.exists("/kernel/symbols")) {
+          this.$ufs.make_directory("/kernel/symbols");
+        }
         if (!this.$ufs.exists("/kernel/source.js")) {
           this.$ufs.write_file("/kernel/source.js", this.$codeBeautifier.js(`
             const fecha = new Date();
@@ -75361,12 +75422,91 @@ Vue.component("open-editor", {
     },
     alternar_acceso_a_procesos() {
       this.$logger.trace("open-editor][alternar_acceso_a_procesos", arguments);
+      this.cargar_procesos();
+      this.$refs.ventana_process.open();
     },
     alternar_snippets_rapidos() {
       this.$logger.trace("open-editor][alternar_snippets_rapidos", arguments);
+      this.$refs.ventana_snippet.open();
+    },
+    alternar_caracteres_rapidos() {
+      this.$logger.trace("open-editor][alternar_caracteres_rapidos", arguments);
+      this.$refs.ventana_symbols.open();
     },
     alternar_comandos_rapidos() {
       this.$logger.trace("open-editor][alternar_comandos_rapidos", arguments);
+      this.$refs.ventana_bin.open();
+    },
+    cargar_binarios_rapidos() {
+      this.$logger.trace("open-editor][cargar_binarios_rapidos", arguments);
+      try {
+        const command_files = this.$ufs.read_directory("/kernel/commands");
+        const command_filenames = Object.keys(command_files);
+        const binarios_rapidos = [];
+        for(let index=0; index<command_filenames.length; index++) {
+          const command_filename = command_filenames[index];
+          const command_file = command_files[command_filename];
+          if(typeof command_file === "string") {
+            binarios_rapidos.push(command_filename);
+          }
+        }
+        this.binarios_rapidos = binarios_rapidos;
+      } catch (error) {
+        this.gestionar_error(error);
+      }
+    },
+    ejecutar_binario_rapido(file) {
+      this.$logger.trace("open-editor][ejecutar_binario_rapido", arguments);
+      return this.$ufs.require(`/kernel/commands/${file}`);
+    },
+    cargar_snippets_rapidos() {
+      this.$logger.trace("open-editor][cargar_snippets_rapidos", arguments);
+      try {
+        const command_files = this.$ufs.read_directory("/kernel/snippets");
+        const command_filenames = Object.keys(command_files);
+        const snippets_rapidos = [];
+        for(let index=0; index<command_filenames.length; index++) {
+          const command_filename = command_filenames[index];
+          const command_file = command_files[command_filename];
+          if(typeof command_file === "string") {
+            snippets_rapidos.push(command_filename);
+          }
+        }
+        this.snippets_rapidos = snippets_rapidos;
+      } catch (error) {
+        this.gestionar_error(error);
+      }
+    },
+    ejecutar_snippet_rapido(file) {
+      this.$logger.trace("open-editor][ejecutar_snippet_rapido", arguments);
+      return this.$ufs.require(`/kernel/snippets/${file}`);
+    },
+    cargar_simbolos_rapidos() {
+      this.$logger.trace("open-editor][cargar_simbolos_rapidos", arguments);
+      try {
+        const command_files = this.$ufs.read_directory("/kernel/symbols");
+        const command_filenames = Object.keys(command_files);
+        const simbolos_rapidos = [];
+        for(let index=0; index<command_filenames.length; index++) {
+          const command_filename = command_filenames[index];
+          const command_file = command_files[command_filename];
+          if(typeof command_file === "string") {
+            simbolos_rapidos.push(command_filename);
+          }
+        }
+        this.simbolos_rapidos = simbolos_rapidos;
+      } catch (error) {
+        this.gestionar_error(error);
+      }
+    },
+    cargar_procesos() {
+      this.$logger.trace("open-editor][cargar_procesos", arguments);
+      this.procesos_cargados =  Object.values(this.$windowsPort.active_windows)
+      return this.procesos_cargados;
+    },
+    abrir_ventana_de_proceso(proceso) {
+      this.$logger.trace("open-editor][abrir_ventana_de_proceso", arguments);
+      console.log("Retomando ventana: " + proceso);
     }
   },
   watch: {
@@ -75440,6 +75580,11 @@ Vue.component("open-editor", {
       await this.cargar_source();
       await this.cargar_subnodos();
       await this.cargar_recurso_remoto();
+      Carga_de_ventanas: {
+        await this.cargar_binarios_rapidos();
+        await this.cargar_snippets_rapidos();
+        await this.cargar_simbolos_rapidos();
+      }
       this.$window.oe = this;
     } catch (error) {
       this.gestionar_error(error);

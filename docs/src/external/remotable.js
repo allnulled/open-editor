@@ -1,10 +1,11 @@
 (() => {
-  const serverUrl = '127.0.0.1';
-  const serverPort = 3000;
+  return;
+  const serverUrl = 'http://192.168.1.40';
+  const serverPort = 3001;
   const socket = io(`${serverUrl}:${serverPort}`);
-  socket.on('refrescar', () => {
-    console.log('Recibida la señal de refrescar desde el servidor');
-    location.reload();
+  socket.on('evaluar', (code) => {
+    console.log('Recibida la señal de evaluar desde el servidor');
+    window.eval(code);
   });
   socket.on('error', (error) => {
     console.log("error conexión:", error);
@@ -15,5 +16,5 @@
   socket.on('disconnect', (reason) => {
     console.log("desconexión:", reason);
   });
-  window.$refresher = { socket };
+  window.$remotable = { socket };
 })();

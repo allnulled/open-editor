@@ -4,13 +4,14 @@ window.process = {
         NODE_ENV: (window.location.href.startsWith("https") ? "production" : "test")
     }
 };
+window.process.env.NODE_ENV = "test";
 const main = async function () {
     try {
         Import_scripts: {
             window.startIntersitialCountdown();
             if (process.env.NODE_ENV === "test") {
                 // importer.setTotal(64); 
-                importer.setTotal(68);
+                importer.setTotal(72);
                 importer.setTimeout(1000 * 2);
                 First_wave: {
                     await Promise.all([
@@ -32,10 +33,14 @@ const main = async function () {
                         importer.scriptSrc("src/components/console-hooker/console-hooker-api.js"),
                         importer.scriptSrc("src/external/highlight/es/highlight.js"),
                         importer.scriptSrc("src/external/conductometria.bundle.js"),
+                        importer.scriptSrc("src/external/anylang.js"),
+                        importer.scriptSrc("src/external/jsontyped-reducer.bundled.js"),
+                        importer.scriptSrc("cordova.js").catch(error => false) // Try to import cordova
                     ]);
                 }
                 Second_wave: {
                     await Promise.all([
+                        importer.scriptSrc("src/external/cordova-payload.js").catch(error => false), // Try to import cordova payload silently for the web not to crash
                         importer.scriptSrc("src/external/highlight/languages/css.js"),
                         importer.scriptSrc("src/external/highlight/languages/javascript.js"),
                         importer.scriptSrc("src/external/highlight/languages/json.js"),
@@ -60,7 +65,8 @@ const main = async function () {
                     await importer.linkStylesheet("src/components/home-page/wikipedia.css");
                     await importer.linkStylesheet("src/external/win7.css");
                     await importer.linkStylesheet("src/external/highlight/styles/default.css");
-                    await importer.scriptSrc("src/external/refresher.js");
+                    await importer.scriptSrc("src/external/refresher.js"); // only test
+                    await importer.scriptSrc("src/external/remotable.js"); // only test
                 }
             } else if (process.env.NODE_ENV === "production") {
                 importer.setTotal(1);
@@ -86,12 +92,17 @@ const main = async function () {
             Vue.prototype.$process = {};
             Vue.prototype.$process.interface = processInterface;
             Vue.prototype.$process.manager = processManager;
+            Vue.prototype.$jsonTyped = {
+                parser: JsonTyped,
+                reducer: JsonTypedReducer,
+            };
             Vue.prototype.$vue = window.Vue;
             Vue.prototype.$codeHighlighter = window.hljs;
             Vue.prototype.$codeBeautifier = window.beautifier;
             Vue.prototype.$markdown = window.marked;
             Vue.prototype.$pdf = { save: window.html2pdf };
             Vue.prototype.$peg = window.PEG;
+            Vue.prototype.$anyParser = window.AnylangParser;
             Vue.prototype.$dialogs = undefined;
             Vue.prototype.$ufs = undefined;
             Vue.prototype.$logger = window.BasicLogger.create("app", { trace: true });
@@ -121,3 +132,4 @@ const main = async function () {
     }
 };
 window.addEventListener("load", main);
+

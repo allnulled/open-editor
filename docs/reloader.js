@@ -10,17 +10,18 @@ const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
     origin: '*',
+    methods: ["GET", "POST"]
   }
 });
 
 io.on('connection', (socket) => {
-  console.log('Un cliente se ha conectado');
+  console.log('Un cliente se ha conectado a servidor de reloader');
   socket.on('refrescar', () => {
-    console.log('El servidor ha recibido la señal de refrescar');
+    console.log('El servidor de reloader ha recibido la señal de refrescar');
     io.emit('refrescar');
   });
   socket.on('disconnect', () => {
-    console.log('Un cliente se ha desconectado');
+    console.log('Un cliente se ha desconectado del servidor de reloader');
   });
 });
 
@@ -38,8 +39,13 @@ const watcher = chokidar.watch(".", {
   recursive: true
 });
 watcher.on('change', (ruta) => {
-  if(ruta.includes("/dist/")) {
-    return;
+  Ignores_manuales: {
+    if(ruta.includes("/dist/")) {
+      return;
+    }
+    if(ruta.endsWith("remoter.console.js")) {
+      return;
+    }
   }
   console.log(`Cambios han habido en el archivo: ${ruta}`);
   io.emit("refrescar");
@@ -49,5 +55,5 @@ watcher.on('error', error => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Servidor escuchando en el puerto ${PORT}`);
+  console.log(`Servidor de reloader escuchando en el puerto ${PORT}`);
 });

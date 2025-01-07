@@ -16,7 +16,10 @@ Vue.component("open-editor", {
       editor_de_codigo_tamanio_de_fuente: 10,
       editor_de_codigo_posicion_cursor: undefined,
       console_hooker: undefined,
-      console_logs: []
+      console_logs: [],
+      binarios_rapidos: [],
+      snippets_rapidos: [],
+      procesos_cargados: [],
     }
   },
   methods: {
@@ -235,6 +238,23 @@ Vue.component("open-editor", {
             titulo: "Compilación exitosa",
             pregunta: "Tu fichero de html compilado se encuentra en:\n" + ficheroHtml
           });
+          //
+        } else if (this.nodo_actual.endsWith(".any")) {
+          // Compilar anylang a json:
+          const contenidoAny = this.nodo_actual_contenido_de_fichero;
+          const contenidoJson = this.$anyParser.parse(contenidoAny);
+          const ficheroJson = this.nodo_actual.replace(/\.any$/g, ".json");
+          await this.$ufs.write_file(ficheroJson, JSON.stringify(contenidoJson, null, 2));
+          //
+        } else if (this.nodo_actual.endsWith(".jsont")) {
+          // Compilar jsontyped a json:
+          const contenidoJsont = this.nodo_actual_contenido_de_fichero;
+          const astJsont = this.$jsonTyped.parser.parse(contenidoJsont);
+          const jsontReducers = await this.$ufs.require("/kernel/jsont/reducers/index.js");
+          const contenidoJson = this.$jsonTyped.reducer.reduce(astJsont, jsontReducers);
+          const ficheroJson = this.nodo_actual.replace(/\.jsont$/g, ".json");
+          await this.$ufs.write_file(ficheroJson, contenidoJson);
+          //
         } else if (this.nodo_actual.endsWith(".pegjs")) {
           // Compilar de pegjs a js:
           const contenidoPegjs = this.nodo_actual_contenido_de_fichero;
@@ -383,6 +403,35 @@ Vue.component("open-editor", {
         }
         if (!this.$ufs.exists("/kernel/snippets")) {
           this.$ufs.make_directory("/kernel/snippets");
+        }
+        if (!this.$ufs.exists("/kernel/symbols")) {
+          this.$ufs.make_directory("/kernel/symbols");
+        }
+        if (!this.$ufs.exists("/kernel/jsont")) {
+          this.$ufs.make_directory("/kernel/jsont");
+        }
+        if (!this.$ufs.exists("/kernel/jsont/reducers")) {
+          this.$ufs.make_directory("/kernel/jsont/reducers");
+        }
+        if (!this.$ufs.exists("/kernel/jsont/reducers/index.js")) {
+          this.$ufs.write_file("/kernel/jsont/reducers/index.js", this.$codeBeautifier.js(`return [
+            function (node) {
+              if (node.$type === "sumar") {
+                return node.$operands.reduce((out, it) => {
+                  out += node[it];
+                  return out;
+                }, 0);
+              }
+            },
+            function (node) {
+              if (node.$type === "restar") {
+                return node.$operands.reduce((out, it) => {
+                  out -= node[it];
+                  return out;
+                }, 0);
+              }
+            },
+          ]`));
         }
         if (!this.$ufs.exists("/kernel/source.js")) {
           this.$ufs.write_file("/kernel/source.js", this.$codeBeautifier.js(`
@@ -664,12 +713,91 @@ Vue.component("open-editor", {
     },
     alternar_acceso_a_procesos() {
       this.$logger.trace("open-editor][alternar_acceso_a_procesos", arguments);
+      this.cargar_procesos();
+      this.$refs.ventana_process.open();
     },
     alternar_snippets_rapidos() {
       this.$logger.trace("open-editor][alternar_snippets_rapidos", arguments);
+      this.$refs.ventana_snippet.open();
+    },
+    alternar_caracteres_rapidos() {
+      this.$logger.trace("open-editor][alternar_caracteres_rapidos", arguments);
+      this.$refs.ventana_symbols.open();
     },
     alternar_comandos_rapidos() {
       this.$logger.trace("open-editor][alternar_comandos_rapidos", arguments);
+      this.$refs.ventana_bin.open();
+    },
+    cargar_binarios_rapidos() {
+      this.$logger.trace("open-editor][cargar_binarios_rapidos", arguments);
+      try {
+        const command_files = this.$ufs.read_directory("/kernel/commands");
+        const command_filenames = Object.keys(command_files);
+        const binarios_rapidos = [];
+        for(let index=0; index<command_filenames.length; index++) {
+          const command_filename = command_filenames[index];
+          const command_file = command_files[command_filename];
+          if(typeof command_file === "string") {
+            binarios_rapidos.push(command_filename);
+          }
+        }
+        this.binarios_rapidos = binarios_rapidos;
+      } catch (error) {
+        this.gestionar_error(error);
+      }
+    },
+    ejecutar_binario_rapido(file) {
+      this.$logger.trace("open-editor][ejecutar_binario_rapido", arguments);
+      return this.$ufs.require(`/kernel/commands/${file}`);
+    },
+    cargar_snippets_rapidos() {
+      this.$logger.trace("open-editor][cargar_snippets_rapidos", arguments);
+      try {
+        const command_files = this.$ufs.read_directory("/kernel/snippets");
+        const command_filenames = Object.keys(command_files);
+        const snippets_rapidos = [];
+        for(let index=0; index<command_filenames.length; index++) {
+          const command_filename = command_filenames[index];
+          const command_file = command_files[command_filename];
+          if(typeof command_file === "string") {
+            snippets_rapidos.push(command_filename);
+          }
+        }
+        this.snippets_rapidos = snippets_rapidos;
+      } catch (error) {
+        this.gestionar_error(error);
+      }
+    },
+    ejecutar_snippet_rapido(file) {
+      this.$logger.trace("open-editor][ejecutar_snippet_rapido", arguments);
+      return this.$ufs.require(`/kernel/snippets/${file}`);
+    },
+    cargar_simbolos_rapidos() {
+      this.$logger.trace("open-editor][cargar_simbolos_rapidos", arguments);
+      try {
+        const command_files = this.$ufs.read_directory("/kernel/symbols");
+        const command_filenames = Object.keys(command_files);
+        const simbolos_rapidos = [];
+        for(let index=0; index<command_filenames.length; index++) {
+          const command_filename = command_filenames[index];
+          const command_file = command_files[command_filename];
+          if(typeof command_file === "string") {
+            simbolos_rapidos.push(command_filename);
+          }
+        }
+        this.simbolos_rapidos = simbolos_rapidos;
+      } catch (error) {
+        this.gestionar_error(error);
+      }
+    },
+    cargar_procesos() {
+      this.$logger.trace("open-editor][cargar_procesos", arguments);
+      this.procesos_cargados =  Object.values(this.$windowsPort.active_windows)
+      return this.procesos_cargados;
+    },
+    abrir_ventana_de_proceso(proceso) {
+      this.$logger.trace("open-editor][abrir_ventana_de_proceso", arguments);
+      console.log("Retomando ventana: " + proceso);
     }
   },
   watch: {
@@ -743,6 +871,11 @@ Vue.component("open-editor", {
       await this.cargar_source();
       await this.cargar_subnodos();
       await this.cargar_recurso_remoto();
+      Carga_de_ventanas: {
+        await this.cargar_binarios_rapidos();
+        await this.cargar_snippets_rapidos();
+        await this.cargar_simbolos_rapidos();
+      }
       this.$window.oe = this;
     } catch (error) {
       this.gestionar_error(error);

@@ -171,7 +171,7 @@
     max-height: 120px;
     overflow: scroll;
     font-size: 9px;
-    color: #bf43;
+    color: rgb(154, 146, 76);
     border: 1px solid #bf43;
     border-radius: 2pt;
     opacity: 0.5;
@@ -239,17 +239,16 @@
     margin: 4px;
     margin-bottom: 0px;
     width: 32px;
-    height: 12px;
+    
     min-width: auto;
     max-width: auto;
     border-radius: 50%;
     border-radius: 2pt;
     text-align: center;
-    vertical-align: middle;
     font-size: 7px;
     font-weight: bold;
-    padding-top: 2px;
-    padding-bottom: 2px;
+    padding-top: 0px;
+    padding-bottom: 0px;
     border: 1px solid #FFF4;
     cursor: pointer;
     box-shadow: inset 0px 0px 10px black, 0px 0px 2px white;
@@ -267,11 +266,16 @@
     padding: 0px;
 }
 
-.open-editor .icono_contextual.boton_bin > span {
+.open-editor .icono_contextual > span {
     display: inline-block;
-    padding-top: 8px;
+    padding-top: 10px;
+    padding-bottom: 12px;
 }
 
+.open-editor .icono_contextual.boton_bin > span {
+    display: inline-block;
+    padding-top: 9px;
+}
 
 .open-editor .icono_contextual.icono_contextual_inferior {
     min-height: 18px;
@@ -306,8 +310,8 @@
 .open-editor .contenedor_en_panel_superior {
     border-radius: 0pt;
     height: 100%;
-    padding-top: 5px;
-    padding-left: 5px;
+    padding-top: 0px;
+    padding-left: 0px;
 }
 
 .open-editor .textbox_contextual {
@@ -319,7 +323,8 @@
     font-family: Arial;
     overflow: hidden;
     text-wrap: nowrap;
-    padding-left: 0px;
+    padding-top: 0px;
+    padding-left: 2px;
     padding-right: 0px;
     font-style: italic;
     font-weight: lighter;
@@ -501,5 +506,8 @@
 .open-editor .min_width_auto { min-width:auto; }
 
 .open-editor .nowrap { text-wrap: nowrap; text-overflow: ellipsis; overflow: hidden; }
+.caja_de_ruta_abierta {
+
+}
 
 
