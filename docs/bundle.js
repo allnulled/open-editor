@@ -26,3 +26,5 @@ require("@allnulled/htmlbundler").bundle({
   ignore: [],
   wrap: false,
 });
+
+// 4. Export to mobile app project:

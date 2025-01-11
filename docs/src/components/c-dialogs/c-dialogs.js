@@ -89,7 +89,7 @@ Vue.component("c-dialogs", {
       if (!htmlDialog) {
         throw new Error("No se ha encontrado diálogo «" + id + "»");
       }
-      htmlDialog.showModal();
+      htmlDialog.show();
       Actualizar_valores: {
         this.dialogo = htmlDialog;
         this.respuesta_pendiente = Promise.withResolvers();

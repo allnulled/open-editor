@@ -24,5 +24,6 @@ module.exports = [
   __dirname + "/src/external/jsontyped-reducer.bundled.js",
   __dirname + "/src/external/anylang.js",
   __dirname + "/src/components/console-hooker/console-hooker-api.js",
+  __dirname + "/src/directives/v-focus.js",
   __dirname + "/dist/components.js",
 ]

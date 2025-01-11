@@ -5,14 +5,14 @@ window.process = {
     }
 };
 // window.process.env.NODE_ENV = "test";
-window.process.env.NODE_ENV = "production";
+// window.process.env.NODE_ENV = "production";
 const main = async function () {
     try {
         Import_scripts: {
             window.startIntersitialCountdown();
             if (process.env.NODE_ENV === "test") {
                 // importer.setTotal(64); 
-                importer.setTotal(72);
+                importer.setTotal(73);
                 importer.setTimeout(1000 * 2);
                 First_wave: {
                     await Promise.all([
@@ -48,6 +48,7 @@ const main = async function () {
                         importer.scriptSrc("src/external/highlight/languages/xml.js"),
                         importer.scriptSrc("src/external/highlight/languages/scss.js"),
                         importer.scriptSrc("src/external/highlight/languages/markdown.js"),
+                        importer.scriptSrc("src/directives/v-focus.js"),
                         importer.scriptSrc("src/components/c-badges/c-badges.js"),
                         importer.importVueComponent("src/components/c-dialogs/c-dialogs"),
                         importer.importVueComponent("src/components/open-editor/windows-port"),
@@ -108,6 +109,7 @@ const main = async function () {
             Vue.prototype.$ufs = undefined;
             Vue.prototype.$logger = window.BasicLogger.create("app", { trace: true });
             Vue.prototype.$window = window;
+            Vue.prototype.$windowsPort = undefined;
             Vue.prototype.$importer = window.importer;
             Vue.prototype.$socketio = window.io;
             Vue.prototype.$fetch = window.fetch;
@@ -123,6 +125,7 @@ const main = async function () {
                 Vue.prototype.$ajax = fetch;
                 await Vue.prototype.$db.init("litestarter.main.db", "src/external/sql-wasm.wasm");
             }
+            Vue.prototype.$logger.trace("index.js » installing vue.js v2 app", []);
             const app = new Vue({
                 render: h => h(Vue.options.components.app),
             }).$mount("#app");

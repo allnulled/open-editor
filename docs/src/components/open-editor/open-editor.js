@@ -20,6 +20,7 @@ Vue.component("open-editor", {
       binarios_rapidos: [],
       snippets_rapidos: [],
       procesos_cargados: [],
+      binarios_busqueda: "",
     }
   },
   methods: {
@@ -817,6 +818,11 @@ Vue.component("open-editor", {
       this.$logger.trace("open-editor][watch.iconos_derechos", arguments);
       this.$refs.serie_iconos_derechos.cambiar_iconos(nuevo_valor);
     },
+  },
+  computed: {
+    hasWindowPort() {
+      return typeof this.$windowPort !== "undefined";
+    }
   },
   async mounted() {
     try {

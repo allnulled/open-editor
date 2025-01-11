@@ -49,7 +49,7 @@ Vue.component("c-badge", {
       return this;
     },
     _show() {
-      this.$el.querySelector("dialog").showModal();
+      this.$el.querySelector("dialog").show();
     },
     _close() {
       this.$el.querySelector("dialog").close();

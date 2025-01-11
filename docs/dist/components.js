@@ -357,7 +357,7 @@ Vue.component("c-dialogs", {
       if (!htmlDialog) {
         throw new Error("No se ha encontrado diálogo «" + id + "»");
       }
-      htmlDialog.showModal();
+      htmlDialog.show();
       Actualizar_valores: {
         this.dialogo = htmlDialog;
         this.respuesta_pendiente = Promise.withResolvers();
@@ -918,11 +918,11 @@ Vue.component("open-editor", {
             </div>
             <div class="panel_inferior">
                 <div style="display: flex; flex-direction: row;">
-                    <div style="flex: 1; min-width: 40px;" class="nowrap">
+                    <!--div style="flex: 1; min-width: 40px;" class="nowrap">
                         <div title="Acceso a procesos" class="icono_contextual fondo_naranja icono_contextual_inferior" v-on:click="alternar_acceso_a_procesos">
                             Process
                         </div>
-                    </div>
+                    </div-->
                     <div class="contenedor_en_panel_superior"
                         style="flex: 100;">
                         <template v-if="nodo_actual_es_fichero && editor_de_codigo_posicion_cursor">
@@ -960,9 +960,14 @@ Vue.component("open-editor", {
         <template slot="title">Binarios rápidos</template>
         <template slot="body">
             <div>
-                <span v-for="file, file_index in binarios_rapidos" v-bind:key="'binary-' + file_index" style="margin-right: 4px; margin-bottom: 4px;">
-                    <button v-on:click="() => ejecutar_binario_rapido(file)">{{ file }}</button>
-                </span>
+                <div style="padding-bottom: 4px;">
+                    <input ref="binarios_busqueda_input" type="text" style="width: 100%;" v-model="binarios_busqueda" v-focus />
+                </div>
+                <template v-for="file, file_index in binarios_rapidos">
+                    <span v-if="binarios_busqueda === '' || (file_index + file).includes(binarios_busqueda)" v-bind:key="'binary-' + file_index" style="margin-right: 4px; margin-bottom: 4px; display: inline-block;">
+                        <button style="font-size: 10px;" v-on:click="() => ejecutar_binario_rapido(file)">{{ file }}</button>
+                    </span>
+                </template>
             </div>
         </template>
         <template slot="bodyfooter">
@@ -995,7 +1000,7 @@ Vue.component("open-editor", {
     <c-dialog ref="ventana_process">
         <template slot="title">Procesos abiertos</template>
         <template slot="body">
-            <div v-if="$windowsPort">
+            <div v-if="hasWindowPort">
                 <span v-for="proceso, proceso_index in procesos_cargados" v-bind:key="'process-item-' + proceso_index" style="margin-right: 4px; margin-bottom: 4px;">
                     <button v-on:click="() => abrir_ventana_de_proceso(proceso)">{{ proceso.title }}</button>
                 </span>
@@ -1011,6 +1016,11 @@ Vue.component("open-editor", {
             <span class="status-bar-field">Clicar a uno lo abrirá directamente.</span>
         </template>
     </c-dialog>
+    <div style="position: fixed; top: auto; bottom: 4px; left: 0px; right: auto; z-index: 9999; opacity: 1;" class="nowrap">
+        <div title="Acceso a procesos" class="icono_contextual fondo_naranja icono_contextual_inferior" style="opacity: 1;" v-on:click="alternar_acceso_a_procesos">
+            Process
+        </div>
+    </div>
 </div>`,
   data() {
     return {
@@ -1031,6 +1041,7 @@ Vue.component("open-editor", {
       binarios_rapidos: [],
       snippets_rapidos: [],
       procesos_cargados: [],
+      binarios_busqueda: "",
     }
   },
   methods: {
@@ -1828,6 +1839,11 @@ Vue.component("open-editor", {
       this.$logger.trace("open-editor][watch.iconos_derechos", arguments);
       this.$refs.serie_iconos_derechos.cambiar_iconos(nuevo_valor);
     },
+  },
+  computed: {
+    hasWindowPort() {
+      return typeof this.$windowPort !== "undefined";
+    }
   },
   async mounted() {
     try {

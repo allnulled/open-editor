@@ -27,7 +27,6 @@
     bottom: 0;
     left: 0;
     right: 0;
-    max-height: 350px;
 }
 
 .window-body-main {
@@ -323,16 +322,18 @@
     font-family: Arial;
     overflow: hidden;
     text-wrap: nowrap;
-    padding-top: 0px;
-    padding-left: 2px;
+    padding-top: 11px;
+    padding-left: 6px;
     padding-right: 0px;
     font-style: italic;
     font-weight: lighter;
-    font-size: 10px;
+    font-size: 14px;
 }
 .open-editor .textbox_contextual.contexto_inferior {
     color: white;
     font-style: normal;
+    font-size: 10px;
+    padding-top: 5px;
 }
 
 .open-editor .fondo_rojo {
