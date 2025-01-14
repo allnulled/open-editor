@@ -76,14 +76,15 @@ window.process = {
         NODE_ENV: (window.location.href.startsWith("https") ? "production" : "test")
     }
 };
-window.process.env.NODE_ENV = "test";
+// window.process.env.NODE_ENV = "test";
+// window.process.env.NODE_ENV = "production";
 const main = async function () {
     try {
         Import_scripts: {
             window.startIntersitialCountdown();
             if (process.env.NODE_ENV === "test") {
                 // importer.setTotal(64); 
-                importer.setTotal(71);
+                importer.setTotal(73);
                 importer.setTimeout(1000 * 2);
                 First_wave: {
                     await Promise.all([
@@ -105,6 +106,8 @@ const main = async function () {
                         importer.scriptSrc("src/components/console-hooker/console-hooker-api.js"),
                         importer.scriptSrc("src/external/highlight/es/highlight.js"),
                         importer.scriptSrc("src/external/conductometria.bundle.js"),
+                        importer.scriptSrc("src/external/anylang.js"),
+                        importer.scriptSrc("src/external/jsontyped-reducer.bundled.js"),
                         importer.scriptSrc("cordova.js").catch(error => false) // Try to import cordova
                     ]);
                 }
@@ -117,7 +120,7 @@ const main = async function () {
                         importer.scriptSrc("src/external/highlight/languages/xml.js"),
                         importer.scriptSrc("src/external/highlight/languages/scss.js"),
                         importer.scriptSrc("src/external/highlight/languages/markdown.js"),
-                        importer.scriptSrc("src/external/anylang.js"),
+                        importer.scriptSrc("src/directives/v-focus.js"),
                         importer.scriptSrc("src/components/c-badges/c-badges.js"),
                         importer.importVueComponent("src/components/c-dialogs/c-dialogs"),
                         importer.importVueComponent("src/components/open-editor/windows-port"),
@@ -163,6 +166,10 @@ const main = async function () {
             Vue.prototype.$process = {};
             Vue.prototype.$process.interface = processInterface;
             Vue.prototype.$process.manager = processManager;
+            Vue.prototype.$jsonTyped = {
+                parser: JsonTyped,
+                reducer: JsonTypedReducer,
+            };
             Vue.prototype.$vue = window.Vue;
             Vue.prototype.$codeHighlighter = window.hljs;
             Vue.prototype.$codeBeautifier = window.beautifier;
@@ -174,6 +181,7 @@ const main = async function () {
             Vue.prototype.$ufs = undefined;
             Vue.prototype.$logger = window.BasicLogger.create("app", { trace: true });
             Vue.prototype.$window = window;
+            Vue.prototype.$windowsPort = undefined;
             Vue.prototype.$importer = window.importer;
             Vue.prototype.$socketio = window.io;
             Vue.prototype.$fetch = window.fetch;
@@ -189,6 +197,7 @@ const main = async function () {
                 Vue.prototype.$ajax = fetch;
                 await Vue.prototype.$db.init("litestarter.main.db", "src/external/sql-wasm.wasm");
             }
+            Vue.prototype.$logger.trace("index.js » installing vue.js v2 app", []);
             const app = new Vue({
                 render: h => h(Vue.options.components.app),
             }).$mount("#app");
@@ -646,4 +655,17 @@ Luego, tienes que saber también que puedes usar `this.$windowPort.createWindow`
 
 ### Inyección de ficheros
 
-Otra cosa importante que puedes hacer con el editor es **crear links que inyecten ficheros** en el sistema de ficheros. Esto es con el botón de «Link»,
+Otra cosa importante que puedes hacer con el editor es **crear links que inyecten ficheros** en el sistema de ficheros. Esto es con el botón de «Link».
+
+Los ficheros inyectados se guardan automáticamente en:
+
+  - `/kernel/shared/resource/{ name }` si no especificas carpeta
+  - `/kernel/shared/resource/{ folder }/{ name }` si sí especificas carpeta
+
+Si usas el botón de «Link» te obliga a especificar una carpeta, o te rechaza el proceso de exportación.
+
+Con la carpeta, hacemos que los scripts puedan compartimentarse.
+
+Con el fichero, hacemos que los scripts puedan utilizar la extensión que prefieras.
+
+El código por defecto de la aplicación original solo carga el fichero: ni lo compila, ni lo ejecuta, ni lo formatea, ni nada.
