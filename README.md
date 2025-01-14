@@ -572,6 +572,7 @@ Con el editor puedes, de forma relativamente intuitiva:
     - decrementar tamaño de fuente: botón «Font--».
     - cambiar estilo de fuente: botón «Font».
     - exportar un fichero a URL: botón «Link».
+    - cargar recursos tanto por texto en URL como por recurso remoto: con los url-search-params de `shared_resource`, `name` y `folder`.
     - importar un nodo del árbol de ficheros: botón «&lt;&lt; JSON».
     - exportar un nodo del árbol de ficheros: botón «&gt;&gt; JSON».
     - descargar en un fichero: botón «Get».
@@ -643,3 +644,6 @@ Entonces, sabiendo esto, lo he hecho para que:
 
 Luego, tienes que saber también que puedes usar `this.$windowPort.createWindow` para crear procesos, y luego puedes ir a ellos desde el botón de «Process». Esta feature, concretamente, no está terminada.
 
+### Inyección de ficheros
+
+Otra cosa importante que puedes hacer con el editor es **crear links que inyecten ficheros** en el sistema de ficheros. Esto es con el botón de «Link»,

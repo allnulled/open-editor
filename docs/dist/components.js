@@ -1435,6 +1435,12 @@ Vue.component("open-editor", {
         if (!this.$ufs.exists("/kernel/jsont/reducers")) {
           this.$ufs.make_directory("/kernel/jsont/reducers");
         }
+        if (!this.$ufs.exists("/kernel/shared")) {
+          this.$ufs.make_directory("/kernel/shared");
+        }
+        if (!this.$ufs.exists("/kernel/shared/resource")) {
+          this.$ufs.make_directory("/kernel/shared/resource");
+        }
         if (!this.$ufs.exists("/kernel/jsont/reducers/index.js")) {
           this.$ufs.write_file("/kernel/jsont/reducers/index.js", this.$codeBeautifier.js(`return [
             function (node) {
@@ -1524,16 +1530,24 @@ Vue.component("open-editor", {
       try {
         this.$logger.trace("open-editor][cargar_recurso_remoto", arguments);
         const url_parameters = new URLSearchParams(window.location.search);
-        if (url_parameters.has("recurso_directo")) {
-          const code = url_parameters.get("recurso_directo");
-          await this.$ufs.write_file("/resource.js", code);
-          await this.abrir_nodo("/resource.js");
-        } else if (url_parameters.has("recurso_remoto")) {
-          const recurso_remoto = url_parameters.get("recurso_remoto");
-          const response = await fetch(recurso_remoto);
-          const code = await response.text();
-          await this.$ufs.write_file("/resource.js", code);
-          await this.abrir_nodo("/resource.js");
+        if (url_parameters.has("shared_resource") && url_parameters.has("name")) {
+          const code = url_parameters.get("shared_resource");
+          const name = url_parameters.get("name");
+          const folder = url_parameters.get("folder");
+          let fullname = undefined;
+          if(url_parameters.has("folder")) {
+            // Si tiene "folder" nos aseguramos que exista.
+            fullname = "/kernel/shared/resource/" + folder + "/" + name;
+            const intermediate_folder = "/kernel/shared/resource/" + folder;
+            if(!this.$ufs.is_directory(intermediate_folder)) {
+              this.$ufs.make_directory(intermediate_folder);
+            }
+          } else {
+            // Si no tiene "folder" lo pondremos en la carpeta directamente.
+            fullname = "/kernel/shared/resource/" + name;
+          }
+          await this.$ufs.write_file(fullname, code);
+          await this.abrir_nodo(fullname);
         }
       } catch (error) {
         this.gestionar_error(error);
@@ -1544,7 +1558,17 @@ Vue.component("open-editor", {
         this.$logger.trace("open-editor][exportar_como_url", arguments);
         const params = new URLSearchParams();
         const recurso_directo = this.nodo_actual_contenido_de_fichero;
-        params.set("recurso_directo", recurso_directo);
+        params.set("shared_resource", recurso_directo);
+        const name = this.nodo_actual.split("/").pop();
+        params.set("name", name);
+        const folder = await this.$dialogs.pedir_texto({
+          titulo: "Nombre de carpeta compartida de link exportado como URL",
+          pregunta: "Escribe en qué carpeta compartida quieres poner este recurso cuyo nombre será «" + name + "»:"
+        });
+        if(!folder) {
+          return;
+        }
+        params.set("folder", folder);
         this.$dialogs.dialogo_de_notificacion_titulo = "Exportar script como URL";
         this.$dialogs.dialogo_de_notificacion_enunciado = "https://allnulled.github.io/open-editor/index.html?" + params.toString();
         await this.$dialogs.abrir("dialogo_de_exportar_script_como_url");
