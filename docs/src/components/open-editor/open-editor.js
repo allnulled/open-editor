@@ -440,6 +440,43 @@ Vue.component("open-editor", {
             },
           ]`));
         }
+        if(!this.$ufs.exists("/agenda")) {
+          this.$ufs.make_directory("/agenda");
+        }
+        if(!this.$ufs.exists("/agenda/dias")) {
+          this.$ufs.make_directory("/agenda/dias");
+        }
+        if(!this.$ufs.exists("/agenda/dias/0.hoy.js")) {
+          this.$ufs.write_file("/agenda/dias/0.hoy.js", "await this.$conductometria.registrar.fenomenos.en.fecha('2025/01/15', {\n  concepto: 'Desayunar',\n  hora: '08:00'\n});");
+        }
+        if(!this.$ufs.exists("/agenda/conceptos")) {
+          this.$ufs.make_directory("/agenda/conceptos");
+        }
+        if(!this.$ufs.exists("/agenda/ver.js")) {
+          this.$ufs.write_file("/agenda/ver.js", this.$codeBeautifier.js(`
+            Importar_conceptos: {
+              const all_conceptos = Object.keys(this.$ufs.read_directory("/agenda/conceptos"));
+              Iterar_conceptos: for (let i = 0; i < all_conceptos.length; i++) {
+                const concepto = all_conceptos[i];
+                this.$ufs.require(\`/agenda/conceptos/\${concepto}\`);
+              }
+            }
+            Importar_dias: {
+              const all_dias = Object.keys(this.$ufs.read_directory("/agenda/dias"));
+              Iterar_dias: for (let i = 0; i < all_dias.length; i++) {
+                const dia = all_dias[i];
+                if (dia === "0.hoy.js") {
+                  continue Iterar_dias;
+                }
+                this.$ufs.require(\`/agenda/dias/\${dia}\`);
+              }
+              this.$ufs.require("/agenda/dias/0.hoy.js");
+            }
+            Visualizar_conductometria: {
+              this.$openEditor.visualizar_conductometria();
+            }
+          `));
+        }
         if (!this.$ufs.exists("/kernel/source.js")) {
           this.$ufs.write_file("/kernel/source.js", this.$codeBeautifier.js(`
             const fecha = new Date();
@@ -453,6 +490,8 @@ Vue.component("open-editor", {
               titulo: "¡Bienvenid@ a open-editor!",
               pregunta: \`Son las \${hora}:\${minuto} del día \${dia}/\${mes}/\${anio}.\`
             });
+
+            await this.$ufs.require("/agenda/ver.js");
           `));
         }
       }

@@ -5,7 +5,7 @@ window.process = {
     }
 };
 // window.process.env.NODE_ENV = "test";
-// window.process.env.NODE_ENV = "production";
+window.process.env.NODE_ENV = "production";
 const main = async function () {
     try {
         Import_scripts: {
