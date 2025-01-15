@@ -23,6 +23,7 @@ module.exports = [
   __dirname + "/src/external/highlight/languages/xml.js",
   __dirname + "/src/external/jsontyped-reducer.bundled.js",
   __dirname + "/src/external/anylang.js",
+  __dirname + "/src/external/conductometria.bundle.js",
   __dirname + "/src/external/global-utils.js",
   __dirname + "/src/components/console-hooker/console-hooker-api.js",
   __dirname + "/src/directives/v-focus.js",
