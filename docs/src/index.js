@@ -11,8 +11,7 @@ const main = async function () {
         Import_scripts: {
             window.startIntersitialCountdown();
             if (process.env.NODE_ENV === "test") {
-                // importer.setTotal(64); 
-                importer.setTotal(73);
+                importer.setTotal(78);
                 importer.setTimeout(1000 * 2);
                 First_wave: {
                     await Promise.all([
@@ -36,6 +35,7 @@ const main = async function () {
                         importer.scriptSrc("src/external/conductometria.bundle.js"),
                         importer.scriptSrc("src/external/anylang.js"),
                         importer.scriptSrc("src/external/jsontyped-reducer.bundled.js"),
+                        importer.scriptSrc("src/external/global-utils.js"),
                         importer.scriptSrc("cordova.js").catch(error => false) // Try to import cordova
                     ]);
                 }
@@ -60,6 +60,7 @@ const main = async function () {
                         importer.importVueComponent("src/components/c-dialog/c-dialog"),
                         importer.importVueComponent("src/components/c-badge/c-badge"),
                         importer.importVueComponent("src/components/console-hooker/console-hooker"),
+                        importer.importVueComponent("src/components/conductometria-viewer/conductometria-viewer"),
                     ]);
                 }
                 Third_synchronous_wave: {
@@ -107,6 +108,7 @@ const main = async function () {
             Vue.prototype.$anyParser = window.AnylangParser;
             Vue.prototype.$dialogs = undefined;
             Vue.prototype.$ufs = undefined;
+            Vue.prototype.$utils = window.GlobalUtils;
             Vue.prototype.$logger = window.BasicLogger.create("app", { trace: true });
             Vue.prototype.$window = window;
             Vue.prototype.$windowsPort = undefined;
@@ -115,6 +117,8 @@ const main = async function () {
             Vue.prototype.$fetch = window.fetch;
             Vue.prototype.$ensure = window.ensure;
             Vue.prototype.$store = window.UniversalStore.create();
+            Vue.prototype.$sessionStore = {};
+            Vue.prototype.$conductometria = window.Conductometria.crear();
             Conflictive_point: {
                 // Vue.prototype.$sqlite = new SQLitePolyfill("litestarter.main.db", "src/external/sql-wasm.wasm");
                 // await Vue.prototype.$sqlite.init("litestarter.main.db", "src/external/sql-wasm.wasm");

@@ -2,16 +2,16 @@
     <div class="contenedor_de_panel_fijo">
         <div class="panel_fijo">
             <div class="panel_superior" style="display: flex; flex-direction: row;">
+                <div style="flex: 1; min-width: 40px;" class="nowrap">
+                    <div title="Comandos rápidos" class="icono_contextual fondo_amarillo boton_bin" v-on:click="alternar_comandos_rapidos" style="border-radius: 50%;">
+                        <span>Bin!</span>
+                    </div>
+                </div>
                 <div class="contenedor_en_panel_superior" style="flex: 100;">
                     <div class="textbox_contextual nowrap caja_de_ruta_abierta">
                         <b class="">
                             {{ nodo_actual }}
                         </b>
-                    </div>
-                </div>
-                <div style="flex: 1; min-width: 40px;" class="nowrap">
-                    <div title="Comandos rápidos" class="icono_contextual fondo_amarillo boton_bin" v-on:click="alternar_comandos_rapidos" style="border-radius: 50%;">
-                        <span>Bin!</span>
                     </div>
                 </div>
             </div>
@@ -198,11 +198,11 @@
             </div>
             <div class="panel_inferior">
                 <div style="display: flex; flex-direction: row;">
-                    <!--div style="flex: 1; min-width: 40px;" class="nowrap">
-                        <div title="Acceso a procesos" class="icono_contextual fondo_naranja icono_contextual_inferior" v-on:click="alternar_acceso_a_procesos">
+                    <div style="flex: 1; min-width: 40px;" class="nowrap">
+                        <div title="Acceso a procesos" class="icono_contextual fondo_naranja icono_contextual_inferior" style="visibility: hidden;">
                             Process
                         </div>
-                    </div-->
+                    </div>
                     <div class="contenedor_en_panel_superior"
                         style="flex: 100;">
                         <template v-if="nodo_actual_es_fichero && editor_de_codigo_posicion_cursor">
@@ -294,6 +294,22 @@
         </template>
         <template slot="footer">
             <span class="status-bar-field">Clicar a uno lo abrirá directamente.</span>
+        </template>
+    </c-dialog>
+    <c-dialog ref="conductometria_viewer">
+        <template slot="title">
+            Visualizar conductometría
+        </template>
+        <template slot="body">
+            <conductometria-viewer :conductometria="$conductometria" />
+        </template>
+        <template slot="bodyfooter">
+            <div style="text-align: right; padding: 4px;">
+                <button v-on:click="() => $refs.conductometria_viewer.close()">Cancelar</button>
+            </div>
+        </template>
+        <template slot="footer">
+            <span class="status-bar-field">Visualización de instancia de conductometría.</span>
         </template>
     </c-dialog>
     <div style="position: fixed; top: auto; bottom: 4px; left: 0px; right: auto; z-index: 9999; opacity: 1;" class="nowrap">

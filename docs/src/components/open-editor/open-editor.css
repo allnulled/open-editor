@@ -292,7 +292,9 @@
 }
 
 .open-editor .flex_row { display: flex; flex-direction: row; }
+.open-editor .flex_row_centered { display: flex; flex-direction: row; align-items: center; }
 .open-editor .flex_column { display: flex; flex-direction: column; }
+.open-editor .flex_column_centered { display: flex; flex-direction: column; align-items: center; }
 .open-editor .flex_1 { flex: 1; }
 .open-editor .flex_100 { flex: 100; }
 

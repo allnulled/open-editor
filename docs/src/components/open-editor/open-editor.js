@@ -701,6 +701,10 @@ Vue.component("open-editor", {
     preparar_codigo_visualizado(code, language = "javascript") {
       return `<pre class="code_viewer language-${language}">${this.$codeHighlighter.highlight(code, { language }).value}</pre>`;
     },
+    visualizar_conductometria() {
+      this.$logger.trace("open-editor][visualizar_conductometria", arguments);
+      this.$refs.conductometria_viewer.open();
+    },
     ver_fuente_actual() {
       this.$logger.trace("open-editor][ver_fuente_actual", arguments);
       const fuente = this.nodo_actual_contenido_de_fichero;

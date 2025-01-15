@@ -84,7 +84,7 @@ const main = async function () {
             window.startIntersitialCountdown();
             if (process.env.NODE_ENV === "test") {
                 // importer.setTotal(64); 
-                importer.setTotal(73);
+                importer.setTotal(77);
                 importer.setTimeout(1000 * 2);
                 First_wave: {
                     await Promise.all([
@@ -132,6 +132,7 @@ const main = async function () {
                         importer.importVueComponent("src/components/c-dialog/c-dialog"),
                         importer.importVueComponent("src/components/c-badge/c-badge"),
                         importer.importVueComponent("src/components/console-hooker/console-hooker"),
+                        importer.importVueComponent("src/components/conductometria-viewer/conductometria-viewer"),
                     ]);
                 }
                 Third_synchronous_wave: {
@@ -187,6 +188,8 @@ const main = async function () {
             Vue.prototype.$fetch = window.fetch;
             Vue.prototype.$ensure = window.ensure;
             Vue.prototype.$store = window.UniversalStore.create();
+            Vue.prototype.$sessionStore = {};
+            Vue.prototype.$conductometria = window.Conductometria.crear();
             Conflictive_point: {
                 // Vue.prototype.$sqlite = new SQLitePolyfill("litestarter.main.db", "src/external/sql-wasm.wasm");
                 // await Vue.prototype.$sqlite.init("litestarter.main.db", "src/external/sql-wasm.wasm");
@@ -208,6 +211,8 @@ const main = async function () {
     }
 };
 window.addEventListener("load", main);
+
+
 ```
 
 Los ficheros se cargan por olas, cada ola espera a que acabe la anterior, porque los de la siguiente tienen dependencias con los de la anterior, o quieren sobreescribir lo anterior al menos.

@@ -1354,6 +1354,26 @@ const Conductometria = class {
   persistIn(file) {
     require("fs").writeFileSync(file, this.jsonify(), "utf8");
   }
+  resetear = {
+    todo: () => {
+      this.resetear.fenomenos();
+      this.resetear.conceptos();
+      this.resetear.estados();
+      this.resetear.tipos();
+    },
+    fenomenos: () => {
+      this.fenomenos = [];
+    },
+    conceptos: () => {
+      this.conceptos = {};
+    },
+    estados: () => {
+      this.estados = {};
+    },
+    tipos: () => {
+      this.tipos = {};
+    }
+  }
   formatear = {
     tiempo: {
       a: {
@@ -1540,6 +1560,13 @@ const Conductometria = class {
     }
   }
   registrar = {
+    fenomenos: {
+      en: {
+        fecha: (fecha, ...fenomenos) => {
+          return fenomenos.map(fenomeno => Object.assign(fenomeno, { fecha })).forEach(this.registrar.fenomeno);
+        }
+      }
+    },
     fenomeno: (datos) => {
       this.tracear("registrar.fenomeno", []);
       Registrar: {

@@ -716,22 +716,197 @@ Vue.component("console-hooker", {
 
   }
 });
+const ConductometriaViewerAdapter = class {
+
+  constructor(conductometria) {
+    this.conceptos = [];
+    this.fenomenos = [];
+    this.estados = [];
+    this.$original = conductometria;
+    this.cargar();
+  }
+
+  cargar() {
+    Cargar_conceptos: {
+      this.conceptos = [];
+      const conceptos = this.$original.conceptos;
+      const conceptos_ids = Object.keys(conceptos);
+      for(let index_concepto=0; index_concepto<conceptos_ids.length; index_concepto++) {
+        const concepto_id = conceptos_ids[index_concepto];
+        const concepto_dato = conceptos[concepto_id];
+        this.conceptos.push(concepto_dato);
+      }
+    }
+    Cargar_fenomenos: {
+      this.fenomenos = [];
+      const fenomenos = this.$original.fenomenos;
+      const fechas_ids = fenomenos.map(f => f.fecha_legible).filter((fecha, index, self) => self.indexOf(fecha) === index).sort();
+      const fechas_datos = {};
+      Inicializamos_datos:
+      for(let index=0; index<fechas_ids.length; index++) {
+        const fecha_id = fechas_ids[index];
+        fechas_datos[fecha_id] = [];
+      }
+      Insertamos_por_dias_los_fenomenos:
+      for(let index_fenomeno=0; index_fenomeno<fenomenos.length; index_fenomeno++) {
+        const fenomeno = fenomenos[index_fenomeno];
+        const fecha_id = fenomeno.fecha_legible;
+        fechas_datos[fecha_id].push(fenomeno);
+      }
+      Exportamos_fenomenos: {
+        for(let index=0; index<fechas_ids.length; index++) {
+          const fecha_id = fechas_ids[index];
+          this.fenomenos.push({
+            dia: fecha_id,
+            fenomenos: fechas_datos[fecha_id]
+          });
+        }
+      }
+      this.fenomenos = this.fenomenos.reverse();
+    }
+    Cargar_estados: {
+      this.estados = [];
+      const estados = this.$original.estados;
+      const estados_ids = Object.keys(estados);
+      for(let index_estado=0; index_estado<estados_ids.length; index_estado++) {
+        const estado_id = estados_ids[index_estado];
+        const estado_dato = estados[estado_id];
+        this.estados.push(estado_dato);
+      }
+    }
+  }
+
+};
+
+
+Vue.component("conductometria-viewer", {
+  name: "conductometria-viewer",
+  template: `<div class="conductometria-viewer">
+    <div class="panel_seccionador">
+        <div class="flex_row_centered">
+            <div class="flex_100" style="padding-right: 4px; white-space: nowrap; text-align: right;">Estás en sección de: </div>
+            <select class="flex_1" v-model="seccion_seleccionada" style="min-width: 100px; text-align: left;">
+                <option value="Fenómenos">Fenómenos</option>
+                <option value="Conceptos">Conceptos</option>
+                <option value="Estados">Estados</option>
+            </select>
+        </div>
+    </div>
+    <div class="seccion" v-if="seccion_seleccionada === 'Estados'">
+        <div class="titulo_de_seccion">Estados:</div>
+        <div class="item_de_seccion item_tipo_estado" v-for="estado, estado_index in conductometria_adapter.estados"
+            v-bind:key="'conductometria_estado_' + estado_index">
+            <div class="identificador_de_item" v-on:click="() => alternar_estado(estado_index)">{{ estado_index }} por {{ estado.duracion_legible }} / {{ estado.propagaciones }} propagaciones</div>
+            <div class="fila_list" :class="{shown: mostrando_estados.indexOf(estado_index) !== -1}">
+                <div class="fila_item" v-for="value, key, counter in estado" v-bind:key="'key_conductometria_estado_' + estado_index + '_prop_' + key">
+                    <div class="fila_key">{{ counter + 1 }}. {{ $utils.humanize(key) }}:</div>
+                    <div class="fila_value">{{ value }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="seccion" v-if="seccion_seleccionada === 'Fenómenos'">
+        <div class="titulo_de_seccion">Fenómenos:</div>
+        <div class="item_de_seccion item_tipo_fenomeno" v-for="fenomenos_de_dia, fenomenos_de_dia_index in conductometria_adapter.fenomenos"
+            v-bind:key="'conductometria_fenomenos_dia_' + fenomenos_de_dia.dia">
+            <div class="identificador_de_item" v-on:click="() => alternar_dia_de_fenomenos(fenomenos_de_dia.dia)" v-bind:key="'conductometria_fenomeno_' + fenomenos_de_dia.dia + '_id'">
+                {{ $utils.humanizeDatestring(fenomenos_de_dia.dia, 1) }}
+            </div>
+            <div class="fila_list" :class="{shown: mostrando_dias_de_fenomenos.indexOf(fenomenos_de_dia.dia) !== -1}" v-bind:key="'conductometria_fenomeno_' + fenomenos_de_dia.dia + '_fila'">
+                <div class="fila_item" v-for="fenomeno, fenomeno_index in fenomenos_de_dia.fenomenos" v-bind:key="'key_conductometria_fenomeno_' + fenomenos_de_dia.dia + '_prop_' + fenomeno_index">
+                    <div class="fila_key">{ {{ fenomeno.concepto }} } a las {{ fenomeno.hora_legible }} durante {{ fenomeno.duracion_legible }}.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="seccion" v-if="seccion_seleccionada === 'Conceptos'">
+        <div class="titulo_de_seccion">Conceptos:</div>
+        <div class="item_de_seccion item_tipo_concepto" v-for="concepto, concepto_index in conductometria_adapter.conceptos"
+            v-bind:key="'conductometria_concepto_' + concepto_index">
+            <div class="identificador_de_item" v-on:click="() => alternar_concepto(concepto_index)">{{ concepto.concepto }}</div>
+            <div class="fila_list" :class="{shown: mostrando_conceptos.indexOf(concepto_index) !== -1}">
+                <div class="fila_item" v-for="value, key, counter in concepto" v-bind:key="'key_conductometria_concepto_' + concepto_index + '_prop_' + key">
+                    <div class="fila_key">{{ counter + 1 }}. {{ $utils.humanize(key) }}:</div>
+                    <div class="fila_value">{{ value }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>`,
+  props: {
+    conductometria: {
+      type: Object,
+      required: true
+    }
+  },
+  data() {
+    this.$logger.trace("conductometria-viewer][data", arguments);
+    const conductometriaAdapter = new ConductometriaViewerAdapter(this.conductometria);
+    return {
+      seccion_seleccionada: undefined,
+      mostrando_estados: [],
+      mostrando_dias_de_fenomenos: [],
+      mostrando_conceptos: [],
+      conductometria_adapter: conductometriaAdapter
+    }
+  },
+  methods: {
+    alternar_estado(estado_index) {
+      this.$logger.trace("conductometria-viewer][alternar_estado", arguments);
+      const position = this.mostrando_estados.indexOf(estado_index);
+      if(position === -1) {
+        this.mostrando_estados.push(estado_index);
+      } else {
+        this.mostrando_estados.splice(position, 1);
+      }
+    },
+    alternar_dia_de_fenomenos(fenomeno_index) {
+      this.$logger.trace("conductometria-viewer][alternar_dia_de_fenomenos", arguments);
+      const position = this.mostrando_dias_de_fenomenos.indexOf(fenomeno_index);
+      if(position === -1) {
+        this.mostrando_dias_de_fenomenos.push(fenomeno_index);
+      } else {
+        this.mostrando_dias_de_fenomenos.splice(position, 1);
+      }
+    },
+    alternar_concepto(concepto_index) {
+      this.$logger.trace("conductometria-viewer][alternar_concepto", arguments);
+      const position = this.mostrando_conceptos.indexOf(concepto_index);
+      if(position === -1) {
+        this.mostrando_conceptos.push(concepto_index);
+      } else {
+        this.mostrando_conceptos.splice(position, 1);
+      }
+    },
+    ir_a_seccion(seccion) {
+      this.$logger.trace("conductometria-viewer][ir_a_seccion", arguments);
+      this.seccion_seleccionada = seccion;
+    }
+  },
+  mounted() {
+    this.$logger.trace("conductometria-viewer][mounted", arguments);
+    this.ir_a_seccion("Fenómenos");
+  },
+  unmounted() {
+    this.$logger.trace("conductometria-viewer][unmounted", arguments);
+  }
+});
 Vue.component("open-editor", {
   name: "open-editor",
   template: `<div class="open-editor">
     <div class="contenedor_de_panel_fijo">
         <div class="panel_fijo">
             <div class="panel_superior" style="display: flex; flex-direction: row;">
+                <div style="flex: 1; min-width: 40px;" class="nowrap">
+                    <div title="Comandos rápidos" class="icono_contextual fondo_amarillo boton_bin" v-on:click="alternar_comandos_rapidos" style="border-radius: 50%;">
+                        <span>Bin!</span>
+                    </div>
+                </div>
                 <div class="contenedor_en_panel_superior" style="flex: 100;">
                     <div class="textbox_contextual nowrap caja_de_ruta_abierta">
                         <b class="">
                             {{ nodo_actual }}
                         </b>
-                    </div>
-                </div>
-                <div style="flex: 1; min-width: 40px;" class="nowrap">
-                    <div title="Comandos rápidos" class="icono_contextual fondo_amarillo boton_bin" v-on:click="alternar_comandos_rapidos" style="border-radius: 50%;">
-                        <span>Bin!</span>
                     </div>
                 </div>
             </div>
@@ -918,11 +1093,11 @@ Vue.component("open-editor", {
             </div>
             <div class="panel_inferior">
                 <div style="display: flex; flex-direction: row;">
-                    <!--div style="flex: 1; min-width: 40px;" class="nowrap">
-                        <div title="Acceso a procesos" class="icono_contextual fondo_naranja icono_contextual_inferior" v-on:click="alternar_acceso_a_procesos">
+                    <div style="flex: 1; min-width: 40px;" class="nowrap">
+                        <div title="Acceso a procesos" class="icono_contextual fondo_naranja icono_contextual_inferior" style="visibility: hidden;">
                             Process
                         </div>
-                    </div-->
+                    </div>
                     <div class="contenedor_en_panel_superior"
                         style="flex: 100;">
                         <template v-if="nodo_actual_es_fichero && editor_de_codigo_posicion_cursor">
@@ -1014,6 +1189,22 @@ Vue.component("open-editor", {
         </template>
         <template slot="footer">
             <span class="status-bar-field">Clicar a uno lo abrirá directamente.</span>
+        </template>
+    </c-dialog>
+    <c-dialog ref="conductometria_viewer">
+        <template slot="title">
+            Visualizar conductometría
+        </template>
+        <template slot="body">
+            <conductometria-viewer :conductometria="$conductometria" />
+        </template>
+        <template slot="bodyfooter">
+            <div style="text-align: right; padding: 4px;">
+                <button v-on:click="() => $refs.conductometria_viewer.close()">Cancelar</button>
+            </div>
+        </template>
+        <template slot="footer">
+            <span class="status-bar-field">Visualización de instancia de conductometría.</span>
         </template>
     </c-dialog>
     <div style="position: fixed; top: auto; bottom: 4px; left: 0px; right: auto; z-index: 9999; opacity: 1;" class="nowrap">
@@ -1721,6 +1912,10 @@ Vue.component("open-editor", {
     },
     preparar_codigo_visualizado(code, language = "javascript") {
       return `<pre class="code_viewer language-${language}">${this.$codeHighlighter.highlight(code, { language }).value}</pre>`;
+    },
+    visualizar_conductometria() {
+      this.$logger.trace("open-editor][visualizar_conductometria", arguments);
+      this.$refs.conductometria_viewer.open();
     },
     ver_fuente_actual() {
       this.$logger.trace("open-editor][ver_fuente_actual", arguments);

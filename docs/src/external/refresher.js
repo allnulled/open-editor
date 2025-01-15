@@ -18,4 +18,9 @@
     console.log("desconexión:", reason);
   });
   window.$refresher = { socket };
+  Emplazar_el_ui_en_el_punto_de_desarrollo: {
+    setTimeout(function () {
+      Vue.prototype.$openEditor.abrir_nodo("/proyectos/agenda/dias/hoy.js");
+    }, 3000);
+  }
 })();

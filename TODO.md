@@ -1,23 +1,13 @@
 # TODO
 
-[ Para @allnulled/open-editor ]
-
-[x] meter marked.js
-[x] botón para *.md de compilar a *.html
-[x] botón para *.md de visualizar "View" »»» Diálogo WindowProcess
-[x] botón para *.html de visualizar "View" »»» Diálogo WindowProcess
-[x] botón para importar y exportar directorios
-[x] botón para descargar fichero
-[x] soporte para pegjs en botón de compilar
-[x] retocando algo de estilos
-[x] logger trace en open-editor
-[x] parche console.log a badge
-[x] método para importar componentes Vue.js v2 desde ufs
-  [x] this.$ufs.requireVueComponent(...)
-
-[ ] api de badges
-[ ] botón de snippets
-[ ] botón de code para códigos:
-  [ ] html
-  [ ] js
-  [ ] css
+[ ] Vista de conductometria
+  [ ] Fenómenos:
+    [ ] Agrupados por días con TOGGLE
+    [ ] Luego que te salga: { hora de inicio }-{ hora de fin }: { concepto } (con TOGGLE)
+    [ ] Luego que te salgan solo:
+      [ ] Los campos no redundantes:
+        [ ] no fecha sino fecha_legible
+        [ ] no hora sino hora_legible
+        [ ] no duracion sino duracion_legible
+      [ ] Con formato: <b>{key}:</b><span>{value}</span>
+      [ ] Con rows de tonos alternos

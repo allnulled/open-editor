@@ -162,13 +162,13 @@
     </div>
     <script>
         window.startIntersitialCountdown = function () {
-            let countdown = 4;
+            let countdown = 3;
             const decrease = () => {
                 const countdownerElement = document.querySelector("#intersitial_countdown_seconds");
                 if (countdownerElement) {
                     countdown--;
                     if (countdown <= 0) {
-                        countdownerElement.textContent = "Modules are taking too much.";
+                        countdownerElement.textContent = "modules are taking more than expected.";
                     } else {
                         countdownerElement.textContent = countdown;
                     }
@@ -178,7 +178,7 @@
             decrease();
             setTimeout(() => {
                 clearInterval(intervalId);
-            }, 1000 * 2.5);
+            }, 1000 * 1);
         }
     </script>
     <script src="src/external/importer.js"></script>

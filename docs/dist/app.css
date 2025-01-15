@@ -621,6 +621,80 @@ code.hljs {
     border-radius: 2pt;
     opacity: 0.5;
 }
+.conductometria-viewer {}
+
+.conductometria-viewer .seccion {}
+
+.conductometria-viewer .titulo_de_seccion {
+    background-color: #222;
+    color: white;
+    padding: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.conductometria-viewer .item_de_seccion {
+    border-left: 0px solid #333;
+    border-right: 0px solid #333;
+    border-bottom: 1px solid #333;
+    border-top: 0px solid #FFF;
+    padding: 0px;
+}
+
+.conductometria-viewer .identificador_de_item {
+    padding: 8px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    background-color: #9F5C19FF;
+    color: #FFF;
+    border-left: 1px solid #333;
+    border-right: 1px solid #333;
+    cursor: pointer;
+}
+.conductometria-viewer .identificador_de_item:hover {
+    background-color: #9F5C19DE;
+}
+
+.conductometria-viewer .code_viewer {}
+
+.conductometria-viewer .panel_seccionador {
+    padding-bottom: 4px;
+}
+
+.conductometria-viewer .panel_seccionador select {
+    width: 100%;
+}
+
+.conductometria-viewer .fila_list {
+    display: none;
+    border-top: 1px solid #333;
+    border-bottom: 0px solid #333;
+}
+.conductometria-viewer .fila_list.shown {
+    display: block;
+}
+
+.conductometria-viewer .fila_item {
+    border: 1px solid #333;
+    border-bottom: 0px solid #333;
+    border-top: 0px solid #333;
+}
+
+.conductometria-viewer .fila_key,
+.conductometria-viewer .fila_value {
+    padding: 8px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.conductometria-viewer .fila_key {
+    background-color: #BBB;
+}
+
+.conductometria-viewer .fila_value {
+    background-color: #EEE;
+    white-space: pre;
+}
 
 .open-editor .contenedor_de_panel_fijo {
     position: fixed;
@@ -915,7 +989,9 @@ code.hljs {
 }
 
 .open-editor .flex_row { display: flex; flex-direction: row; }
+.open-editor .flex_row_centered { display: flex; flex-direction: row; align-items: center; }
 .open-editor .flex_column { display: flex; flex-direction: column; }
+.open-editor .flex_column_centered { display: flex; flex-direction: column; align-items: center; }
 .open-editor .flex_1 { flex: 1; }
 .open-editor .flex_100 { flex: 100; }
 
