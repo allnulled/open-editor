@@ -91,7 +91,7 @@
                                 </template>
                             </template>
                             <template v-else-if="nodo_actual_es_directorio">
-                                <div class="contenedor_de_lista_de_nodos">
+                                <div class="contenedor_de_lista_de_nodos" v-if="esta_cargado">
                                     <ul class="no_list lista_de_nodos">
                                         <template v-if="nodo_actual_subnodos && nodo_actual_subnodos.length">
                                             <li v-for="subnodo, subnodo_index in nodo_actual_subnodos"

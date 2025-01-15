@@ -79165,7 +79165,7 @@ Vue.component("open-editor", {
                                 </template>
                             </template>
                             <template v-else-if="nodo_actual_es_directorio">
-                                <div class="contenedor_de_lista_de_nodos">
+                                <div class="contenedor_de_lista_de_nodos" v-if="esta_cargado">
                                     <ul class="no_list lista_de_nodos">
                                         <template v-if="nodo_actual_subnodos && nodo_actual_subnodos.length">
                                             <li v-for="subnodo, subnodo_index in nodo_actual_subnodos"
@@ -79394,6 +79394,7 @@ Vue.component("open-editor", {
 </div>`,
   data() {
     return {
+      esta_cargado: false,
       error: undefined,
       nodo_actual: "/",
       nodo_actual_es_fichero: false,
@@ -80341,6 +80342,7 @@ Vue.component("open-editor", {
         await this.cargar_snippets_rapidos();
         await this.cargar_simbolos_rapidos();
       }
+      this.esta_cargado = true;
       this.$window.oe = this;
     } catch (error) {
       this.gestionar_error(error);

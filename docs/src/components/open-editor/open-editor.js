@@ -3,6 +3,7 @@ Vue.component("open-editor", {
   template: $template,
   data() {
     return {
+      esta_cargado: false,
       error: undefined,
       nodo_actual: "/",
       nodo_actual_es_fichero: false,
@@ -950,6 +951,10 @@ Vue.component("open-editor", {
         await this.cargar_snippets_rapidos();
         await this.cargar_simbolos_rapidos();
       }
+      setTimeout(() => {
+        this.esta_cargado = true;
+        this.$forceUpdate(true);
+      }, 0);
       this.$window.oe = this;
     } catch (error) {
       this.gestionar_error(error);
