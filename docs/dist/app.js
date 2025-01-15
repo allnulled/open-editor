@@ -78950,7 +78950,7 @@ const ConductometriaViewerAdapter = class {
       for(let index_estado=0; index_estado<estados_ids.length; index_estado++) {
         const estado_id = estados_ids[index_estado];
         const estado_dato = estados[estado_id];
-        this.estados.push(estado_dato);
+        this.estados.push({ concepto: estado_id, ...estado_dato });
       }
     }
   }
@@ -78975,7 +78975,7 @@ Vue.component("conductometria-viewer", {
         <div class="titulo_de_seccion">Estados:</div>
         <div class="item_de_seccion item_tipo_estado" v-for="estado, estado_index in conductometria_adapter.estados"
             v-bind:key="'conductometria_estado_' + estado_index">
-            <div class="identificador_de_item" v-on:click="() => alternar_estado(estado_index)">{{ estado_index }} por {{ estado.duracion_legible }} / {{ estado.propagaciones }} propagaciones</div>
+            <div class="identificador_de_item" v-on:click="() => alternar_estado(estado_index)">{ {{ estado.concepto }} } un total de {{ estado.duracion_legible }} en {{ estado.propagaciones }} propagaciones.</div>
             <div class="fila_list" :class="{shown: mostrando_estados.indexOf(estado_index) !== -1}">
                 <div class="fila_item" v-for="value, key, counter in estado" v-bind:key="'key_conductometria_estado_' + estado_index + '_prop_' + key">
                     <div class="fila_key">{{ counter + 1 }}. {{ $utils.humanize(key) }}:</div>
@@ -78989,7 +78989,7 @@ Vue.component("conductometria-viewer", {
         <div class="item_de_seccion item_tipo_fenomeno" v-for="fenomenos_de_dia, fenomenos_de_dia_index in conductometria_adapter.fenomenos"
             v-bind:key="'conductometria_fenomenos_dia_' + fenomenos_de_dia.dia">
             <div class="identificador_de_item" v-on:click="() => alternar_dia_de_fenomenos(fenomenos_de_dia.dia)" v-bind:key="'conductometria_fenomeno_' + fenomenos_de_dia.dia + '_id'">
-                {{ $utils.humanizeDatestring(fenomenos_de_dia.dia, 1) }}
+                {{ $utils.humanizeDatestring(fenomenos_de_dia.dia, 1) }} tiene asignados {{ fenomenos_de_dia.fenomenos.length }} fenómenos.
             </div>
             <div class="fila_list" :class="{shown: mostrando_dias_de_fenomenos.indexOf(fenomenos_de_dia.dia) !== -1}" v-bind:key="'conductometria_fenomeno_' + fenomenos_de_dia.dia + '_fila'">
                 <div class="fila_item" v-for="fenomeno, fenomeno_index in fenomenos_de_dia.fenomenos" v-bind:key="'key_conductometria_fenomeno_' + fenomenos_de_dia.dia + '_prop_' + fenomeno_index">
@@ -80168,6 +80168,7 @@ Vue.component("open-editor", {
     },
     ejecutar_binario_rapido(file) {
       this.$logger.trace("open-editor][ejecutar_binario_rapido", arguments);
+      this.$refs.ventana_bin.close();
       return this.$ufs.require(`/kernel/commands/${file}`);
     },
     cargar_snippets_rapidos() {

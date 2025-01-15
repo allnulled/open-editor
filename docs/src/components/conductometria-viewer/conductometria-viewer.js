@@ -53,7 +53,7 @@ const ConductometriaViewerAdapter = class {
       for(let index_estado=0; index_estado<estados_ids.length; index_estado++) {
         const estado_id = estados_ids[index_estado];
         const estado_dato = estados[estado_id];
-        this.estados.push(estado_dato);
+        this.estados.push({ concepto: estado_id, ...estado_dato });
       }
     }
   }

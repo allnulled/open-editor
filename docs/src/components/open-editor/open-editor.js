@@ -777,6 +777,7 @@ Vue.component("open-editor", {
     },
     ejecutar_binario_rapido(file) {
       this.$logger.trace("open-editor][ejecutar_binario_rapido", arguments);
+      this.$refs.ventana_bin.close();
       return this.$ufs.require(`/kernel/commands/${file}`);
     },
     cargar_snippets_rapidos() {
