@@ -18,7 +18,8 @@
     max-height: 120px;
     overflow: scroll;
     font-size: 9px;
-    color: rgb(154, 146, 76);
+    color: rgb(101, 255, 15);
+    background-color: #191e2245;
     border: 1px solid #bf43;
     border-radius: 2pt;
     opacity: 0.5;

@@ -22,7 +22,7 @@
             <div class="window-body">
                 <div class="window-body-main">
                     <div style="white-space:pre-wrap;">{{ dialogo_de_notificacion_enunciado }}</div>
-                    <input class="width_100" type="text" ref="texto_de_pedir_texto" placeholder=""  v-on:keypress.enter="() => responder($refs.texto_de_pedir_texto.value).cerrar()" />
+                    <input class="width_100" type="text" ref="texto_de_pedir_texto" placeholder=""  v-on:keypress.enter="() => responder($refs.texto_de_pedir_texto.value).cerrar()" v-model="respuesta" />
                 </div>
                 <div class="window-body-foot">
                     <button class="" v-on:click="() => responder($refs.texto_de_pedir_texto.value).cerrar()">Aceptar</button>

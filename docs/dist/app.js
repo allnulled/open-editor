@@ -78243,7 +78243,7 @@ Vue.component("c-dialogs", {
             <div class="window-body">
                 <div class="window-body-main">
                     <div style="white-space:pre-wrap;">{{ dialogo_de_notificacion_enunciado }}</div>
-                    <input class="width_100" type="text" ref="texto_de_pedir_texto" placeholder=""  v-on:keypress.enter="() => responder($refs.texto_de_pedir_texto.value).cerrar()" />
+                    <input class="width_100" type="text" ref="texto_de_pedir_texto" placeholder=""  v-on:keypress.enter="() => responder($refs.texto_de_pedir_texto.value).cerrar()" v-model="respuesta" />
                 </div>
                 <div class="window-body-foot">
                     <button class="" v-on:click="() => responder($refs.texto_de_pedir_texto.value).cerrar()">Aceptar</button>
@@ -78993,7 +78993,8 @@ Vue.component("conductometria-viewer", {
             </div>
             <div class="fila_list" :class="{shown: mostrando_dias_de_fenomenos.indexOf(fenomenos_de_dia.dia) !== -1}" v-bind:key="'conductometria_fenomeno_' + fenomenos_de_dia.dia + '_fila'">
                 <div class="fila_item" v-for="fenomeno, fenomeno_index in fenomenos_de_dia.fenomenos" v-bind:key="'key_conductometria_fenomeno_' + fenomenos_de_dia.dia + '_prop_' + fenomeno_index">
-                    <div class="fila_key">{ {{ fenomeno.concepto }} } a las {{ fenomeno.hora_legible }} durante {{ fenomeno.duracion_legible }}.</div>
+                    <div class="fila_key">{{ fenomeno.hora_legible }} - { {{ fenomeno.concepto }} }<span v-if="fenomeno.duracion_legible"> por {{ fenomeno.duracion_legible }}</span>.</div>
+                    <div class="fila_value" style="white-space: pre;">{{ fenomeno }}</div>
                 </div>
             </div>
         </div>
@@ -79173,12 +79174,12 @@ Vue.component("open-editor", {
                                                 <button v-if="typeof subnodo.valor === 'object'"
                                                     class="nowrap width_100 text_align_left"
                                                     v-on:click="() => abrir_nodo(subnodo.nombre)">
-                                                    <b>{{ subnodo.nombre }}</b>
+                                                    <b><span class="position_relative"><span class="position_absolute">{{ subnodo.nombre }}</span></span></b>
                                                 </button>
                                                 <button v-else=""
                                                     class="nowrap width_100 text_align_left"
                                                     v-on:click="() => abrir_nodo(subnodo.nombre)">
-                                                    {{ subnodo.nombre }}
+                                                    <span class="position_relative"><span class="position_absolute">{{ subnodo.nombre }}</span></span>
                                                 </button>
                                             </li>
                                         </template>
@@ -79294,6 +79295,11 @@ Vue.component("open-editor", {
                         </template>
                     </div>
                     <div style="flex: 1; min-width: 40px;" class="nowrap">
+                        <div title="Recargar aplicación" class="icono_contextual fondo_rosa icono_contextual_inferior" v-on:click="recargar_aplicacion">
+                            Reload
+                        </div>
+                    </div>
+                    <div style="flex: 1; min-width: 40px;" class="nowrap">
                         <div title="Alternar consola" class="icono_contextual fondo_blanco icono_contextual_inferior" v-on:click="alternar_consola">
                             Console
                         </div>
@@ -79301,6 +79307,16 @@ Vue.component("open-editor", {
                     <div style="flex: 1; min-width: 40px;" class="nowrap" v-if="nodo_actual_es_fichero">
                         <div title="Snippets rápidos" class="icono_contextual fondo_azul icono_contextual_inferior" v-on:click="alternar_snippets_rapidos">
                             Snippet
+                        </div>
+                    </div>
+                    <div style="flex: 1; min-width: 40px;" class="nowrap">
+                        <div title="Abrir nodo por ruta" class="icono_contextual fondo_verde icono_contextual_inferior" v-on:click="abrir_nodo_por_ruta">
+                            Open
+                        </div>
+                    </div>
+                    <div style="flex: 1; min-width: 40px;" class="nowrap">
+                        <div title="Ejecutar comando predefinido" class="icono_contextual fondo_rojo icono_contextual_inferior" v-on:click="ejecutar_comando_predefinido">
+                            Execute
                         </div>
                     </div>
                 </div>
@@ -79464,9 +79480,10 @@ Vue.component("open-editor", {
         this.editor_de_codigo_posicion_cursor = this.obtener_posicion_de_cursor(editor);
       }, 0);
     },
-    async cargar_subnodos() {
+    async cargar_subnodos(trace_clue) {
       try {
         this.$logger.trace("open-editor][cargar_subnodos", arguments);
+        // console.log("Clue:" + trace_clue);
         const subnodos = await this.$ufs.read_directory(this.nodo_actual);
         const subnodos_ordenados = Object.keys(subnodos).sort((s1, s2) => {
           const v1 = subnodos[s1];
@@ -79494,7 +79511,7 @@ Vue.component("open-editor", {
         this.gestionar_error(error);
       }
     },
-    gestionar_error(error, no_propagar = false) {
+    async gestionar_error(error, no_propagar = false) {
       this.$logger.trace("open-editor][gestionar_error", arguments);
       console.log(error);
       this.error = error;
@@ -79517,7 +79534,7 @@ Vue.component("open-editor", {
         const ruta = this.$ufs.resolve_path(this.nodo_actual, nombre);
         this.$logger.trace("open-editor][Creando carpeta: " + ruta, arguments);
         await this.$ufs.make_directory(ruta);
-        await this.cargar_subnodos();
+        await this.cargar_subnodos("crear carpeta");
         return;
       } catch (error) {
         this.gestionar_error(error);
@@ -79530,7 +79547,7 @@ Vue.component("open-editor", {
         if (!nombre) return;
         const ruta = this.$ufs.resolve_path(this.nodo_actual, nombre);
         await this.$ufs.write_file(ruta, "");
-        await this.cargar_subnodos();
+        await this.cargar_subnodos("crear fichero");
         return;
       } catch (error) {
         this.gestionar_error(error);
@@ -79561,6 +79578,7 @@ Vue.component("open-editor", {
         this.$logger.trace("open-editor][abrir_nodo", arguments);
         const ruta = this.$ufs.resolve_path(this.nodo_actual, nodo);
         const es_fichero = await this.$ufs.is_file(ruta);
+        console.log("Ruta: " + ruta);
         if (es_fichero) {
           this.nodo_actual = ruta;
           this.nodo_actual_es_directorio = false;
@@ -79575,9 +79593,10 @@ Vue.component("open-editor", {
           // this.nodo_actual_contenido_de_fichero = await this.$ufs.read_file(ruta); // Lo dejamos igual también
           this.nodo_actual_es_directorio = true;
           this.nodo_actual_es_fichero = false;
-          await this.cargar_subnodos();
+          await this.cargar_subnodos("abrir nodo");
           return;
         }
+        throw new Error(`No se pudo abrir nodo porque no es ni fichero ni directorio: «${this.nodo_actual}»`);
       } catch (error) {
         this.gestionar_error(error);
       }
@@ -79884,6 +79903,14 @@ Vue.component("open-editor", {
             });
 
             await this.$ufs.require("/agenda/ver.js");
+          `));
+        }
+        if (!this.$ufs.exists("/kernel/execution.js")) {
+          this.$ufs.write_file("/kernel/execution.js", this.$codeBeautifier.js(`
+            await this.$dialogs.notificar({
+              titulo: "Hola desde /kernel/execution.js",
+              pregunta: "Este diálogo está escrito en /kernel/execution.js"
+            });
           `));
         }
       }
@@ -80259,6 +80286,35 @@ Vue.component("open-editor", {
     abrir_ventana_de_proceso(proceso) {
       this.$logger.trace("open-editor][abrir_ventana_de_proceso", arguments);
       console.log("Retomando ventana: " + proceso);
+    },
+    recargar_aplicacion() {
+      this.$logger.trace("open-editor][recargar_aplicacion", arguments);
+      window.location.reload();
+    },
+    async abrir_nodo_por_ruta() {
+      this.$logger.trace("open-editor][abrir_nodo_por_ruta", arguments);
+      try {
+        const nodo = await this.$dialogs.pedir_texto({
+          titulo: "Abrir nodo según ruta",
+          pregunta: "Escribe la ruta que quieres abrir:"
+        });
+        if(!nodo) {
+          return;
+        }
+        this.abrir_nodo(nodo);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    ejecutar_comando_predefinido() {
+      this.$logger.trace("open-editor][ejecutar_comando_predefinido", arguments);
+      this.$ufs.require("/kernel/execution.js");
+    },
+    finalizar_carga() {
+      if(!this.esta_cargado) {
+        this.esta_cargado = true;
+        this.$forceUpdate(true);
+      }
     }
   },
   watch: {
@@ -80287,6 +80343,7 @@ Vue.component("open-editor", {
   async mounted() {
     try {
       this.$logger.trace("open-editor][mounted", arguments);
+      setTimeout(this.finalizar_carga, 3000);
       Vue.prototype.$openEditor = this;
       Vue.prototype.$downloadFile = this.downloadTextFile.bind(this);
       Vue.prototype.$ufs = UFS_manager.create();
@@ -80334,18 +80391,19 @@ Vue.component("open-editor", {
       };
       this.registrar_evento_de_redimensionar();
       this.evento_de_redimensionar();
-      await this.cargar_source();
-      await this.cargar_subnodos();
-      await this.cargar_recurso_remoto();
       Carga_de_ventanas: {
         await this.cargar_binarios_rapidos();
         await this.cargar_snippets_rapidos();
         await this.cargar_simbolos_rapidos();
       }
-      this.esta_cargado = true;
+      await this.cargar_subnodos("mounted");
+      await this.cargar_source();
+      await this.cargar_recurso_remoto();
       this.$window.oe = this;
     } catch (error) {
       this.gestionar_error(error);
+    } finally {
+      setTimeout(this.finalizar_carga, 0);
     }
   },
   unmounted() {

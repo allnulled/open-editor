@@ -31,7 +31,8 @@
             </div>
             <div class="fila_list" :class="{shown: mostrando_dias_de_fenomenos.indexOf(fenomenos_de_dia.dia) !== -1}" v-bind:key="'conductometria_fenomeno_' + fenomenos_de_dia.dia + '_fila'">
                 <div class="fila_item" v-for="fenomeno, fenomeno_index in fenomenos_de_dia.fenomenos" v-bind:key="'key_conductometria_fenomeno_' + fenomenos_de_dia.dia + '_prop_' + fenomeno_index">
-                    <div class="fila_key">{ {{ fenomeno.concepto }} } a las {{ fenomeno.hora_legible }} durante {{ fenomeno.duracion_legible }}.</div>
+                    <div class="fila_key">{{ fenomeno.hora_legible }} - { {{ fenomeno.concepto }} }<span v-if="fenomeno.duracion_legible"> por {{ fenomeno.duracion_legible }}</span>.</div>
+                    <div class="fila_value" style="white-space: pre;">{{ fenomeno }}</div>
                 </div>
             </div>
         </div>

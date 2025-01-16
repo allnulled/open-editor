@@ -73,9 +73,10 @@ Vue.component("open-editor", {
         this.editor_de_codigo_posicion_cursor = this.obtener_posicion_de_cursor(editor);
       }, 0);
     },
-    async cargar_subnodos() {
+    async cargar_subnodos(trace_clue) {
       try {
         this.$logger.trace("open-editor][cargar_subnodos", arguments);
+        // console.log("Clue:" + trace_clue);
         const subnodos = await this.$ufs.read_directory(this.nodo_actual);
         const subnodos_ordenados = Object.keys(subnodos).sort((s1, s2) => {
           const v1 = subnodos[s1];
@@ -103,7 +104,7 @@ Vue.component("open-editor", {
         this.gestionar_error(error);
       }
     },
-    gestionar_error(error, no_propagar = false) {
+    async gestionar_error(error, no_propagar = false) {
       this.$logger.trace("open-editor][gestionar_error", arguments);
       console.log(error);
       this.error = error;
@@ -126,7 +127,7 @@ Vue.component("open-editor", {
         const ruta = this.$ufs.resolve_path(this.nodo_actual, nombre);
         this.$logger.trace("open-editor][Creando carpeta: " + ruta, arguments);
         await this.$ufs.make_directory(ruta);
-        await this.cargar_subnodos();
+        await this.cargar_subnodos("crear carpeta");
         return;
       } catch (error) {
         this.gestionar_error(error);
@@ -139,7 +140,7 @@ Vue.component("open-editor", {
         if (!nombre) return;
         const ruta = this.$ufs.resolve_path(this.nodo_actual, nombre);
         await this.$ufs.write_file(ruta, "");
-        await this.cargar_subnodos();
+        await this.cargar_subnodos("crear fichero");
         return;
       } catch (error) {
         this.gestionar_error(error);
@@ -170,6 +171,7 @@ Vue.component("open-editor", {
         this.$logger.trace("open-editor][abrir_nodo", arguments);
         const ruta = this.$ufs.resolve_path(this.nodo_actual, nodo);
         const es_fichero = await this.$ufs.is_file(ruta);
+        console.log("Ruta: " + ruta);
         if (es_fichero) {
           this.nodo_actual = ruta;
           this.nodo_actual_es_directorio = false;
@@ -184,9 +186,10 @@ Vue.component("open-editor", {
           // this.nodo_actual_contenido_de_fichero = await this.$ufs.read_file(ruta); // Lo dejamos igual también
           this.nodo_actual_es_directorio = true;
           this.nodo_actual_es_fichero = false;
-          await this.cargar_subnodos();
+          await this.cargar_subnodos("abrir nodo");
           return;
         }
+        throw new Error(`No se pudo abrir nodo porque no es ni fichero ni directorio: «${this.nodo_actual}»`);
       } catch (error) {
         this.gestionar_error(error);
       }
@@ -493,6 +496,14 @@ Vue.component("open-editor", {
             });
 
             await this.$ufs.require("/agenda/ver.js");
+          `));
+        }
+        if (!this.$ufs.exists("/kernel/execution.js")) {
+          this.$ufs.write_file("/kernel/execution.js", this.$codeBeautifier.js(`
+            await this.$dialogs.notificar({
+              titulo: "Hola desde /kernel/execution.js",
+              pregunta: "Este diálogo está escrito en /kernel/execution.js"
+            });
           `));
         }
       }
@@ -868,6 +879,35 @@ Vue.component("open-editor", {
     abrir_ventana_de_proceso(proceso) {
       this.$logger.trace("open-editor][abrir_ventana_de_proceso", arguments);
       console.log("Retomando ventana: " + proceso);
+    },
+    recargar_aplicacion() {
+      this.$logger.trace("open-editor][recargar_aplicacion", arguments);
+      window.location.reload();
+    },
+    async abrir_nodo_por_ruta() {
+      this.$logger.trace("open-editor][abrir_nodo_por_ruta", arguments);
+      try {
+        const nodo = await this.$dialogs.pedir_texto({
+          titulo: "Abrir nodo según ruta",
+          pregunta: "Escribe la ruta que quieres abrir:"
+        });
+        if(!nodo) {
+          return;
+        }
+        this.abrir_nodo(nodo);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    ejecutar_comando_predefinido() {
+      this.$logger.trace("open-editor][ejecutar_comando_predefinido", arguments);
+      this.$ufs.require("/kernel/execution.js");
+    },
+    finalizar_carga() {
+      if(!this.esta_cargado) {
+        this.esta_cargado = true;
+        this.$forceUpdate(true);
+      }
     }
   },
   watch: {
@@ -896,6 +936,7 @@ Vue.component("open-editor", {
   async mounted() {
     try {
       this.$logger.trace("open-editor][mounted", arguments);
+      setTimeout(this.finalizar_carga, 3000);
       Vue.prototype.$openEditor = this;
       Vue.prototype.$downloadFile = this.downloadTextFile.bind(this);
       Vue.prototype.$ufs = UFS_manager.create();
@@ -943,21 +984,19 @@ Vue.component("open-editor", {
       };
       this.registrar_evento_de_redimensionar();
       this.evento_de_redimensionar();
-      await this.cargar_source();
-      await this.cargar_subnodos();
-      await this.cargar_recurso_remoto();
       Carga_de_ventanas: {
         await this.cargar_binarios_rapidos();
         await this.cargar_snippets_rapidos();
         await this.cargar_simbolos_rapidos();
       }
-      setTimeout(() => {
-        this.esta_cargado = true;
-        this.$forceUpdate(true);
-      }, 0);
+      await this.cargar_subnodos("mounted");
+      await this.cargar_source();
+      await this.cargar_recurso_remoto();
       this.$window.oe = this;
     } catch (error) {
       this.gestionar_error(error);
+    } finally {
+      setTimeout(this.finalizar_carga, 0);
     }
   },
   unmounted() {

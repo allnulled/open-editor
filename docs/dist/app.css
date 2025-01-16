@@ -616,11 +616,13 @@ code.hljs {
     max-height: 120px;
     overflow: scroll;
     font-size: 9px;
-    color: rgb(154, 146, 76);
+    color: rgb(101, 255, 15);
+    background-color: #191e2245;
     border: 1px solid #bf43;
     border-radius: 2pt;
     opacity: 0.5;
 }
+
 .conductometria-viewer {}
 
 .conductometria-viewer .seccion {}
@@ -845,7 +847,7 @@ code.hljs {
     padding-top: 11px;
     padding-left: 6px;
     padding-right: 0px;
-    font-style: italic;
+    font-style: normal;
     font-weight: lighter;
     font-size: 14px;
 }
@@ -1031,6 +1033,17 @@ code.hljs {
 .open-editor .nowrap { text-wrap: nowrap; text-overflow: ellipsis; overflow: hidden; }
 .caja_de_ruta_abierta {
 
+}
+
+.open-editor button .position_relative {
+    position: relative;
+}
+.open-editor button .position_absolute {
+    position: absolute;
+    top: -9px;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 

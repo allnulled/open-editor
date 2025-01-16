@@ -99,12 +99,12 @@
                                                 <button v-if="typeof subnodo.valor === 'object'"
                                                     class="nowrap width_100 text_align_left"
                                                     v-on:click="() => abrir_nodo(subnodo.nombre)">
-                                                    <b>{{ subnodo.nombre }}</b>
+                                                    <b><span class="position_relative"><span class="position_absolute">{{ subnodo.nombre }}</span></span></b>
                                                 </button>
                                                 <button v-else=""
                                                     class="nowrap width_100 text_align_left"
                                                     v-on:click="() => abrir_nodo(subnodo.nombre)">
-                                                    {{ subnodo.nombre }}
+                                                    <span class="position_relative"><span class="position_absolute">{{ subnodo.nombre }}</span></span>
                                                 </button>
                                             </li>
                                         </template>
@@ -220,6 +220,11 @@
                         </template>
                     </div>
                     <div style="flex: 1; min-width: 40px;" class="nowrap">
+                        <div title="Recargar aplicación" class="icono_contextual fondo_rosa icono_contextual_inferior" v-on:click="recargar_aplicacion">
+                            Reload
+                        </div>
+                    </div>
+                    <div style="flex: 1; min-width: 40px;" class="nowrap">
                         <div title="Alternar consola" class="icono_contextual fondo_blanco icono_contextual_inferior" v-on:click="alternar_consola">
                             Console
                         </div>
@@ -227,6 +232,16 @@
                     <div style="flex: 1; min-width: 40px;" class="nowrap" v-if="nodo_actual_es_fichero">
                         <div title="Snippets rápidos" class="icono_contextual fondo_azul icono_contextual_inferior" v-on:click="alternar_snippets_rapidos">
                             Snippet
+                        </div>
+                    </div>
+                    <div style="flex: 1; min-width: 40px;" class="nowrap">
+                        <div title="Abrir nodo por ruta" class="icono_contextual fondo_verde icono_contextual_inferior" v-on:click="abrir_nodo_por_ruta">
+                            Open
+                        </div>
+                    </div>
+                    <div style="flex: 1; min-width: 40px;" class="nowrap">
+                        <div title="Ejecutar comando predefinido" class="icono_contextual fondo_rojo icono_contextual_inferior" v-on:click="ejecutar_comando_predefinido">
+                            Execute
                         </div>
                     </div>
                 </div>
