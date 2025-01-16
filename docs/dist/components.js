@@ -898,16 +898,18 @@ Vue.component("open-editor", {
     <div class="contenedor_de_panel_fijo">
         <div class="panel_fijo">
             <div class="panel_superior" style="display: flex; flex-direction: row;">
+                <div class="contenedor_en_panel_superior" style="flex: 100;">
+                    <div class="textbox_contextual nowrap caja_de_ruta_abierta text_align_right" style="height: 100%;">
+                        <div class="position_relative">
+                            <div class="position_absolute" style="right: 10px; top: 0px; display: flex; justify-content: flex-end;">
+                                <span class="">{{ nodo_actual }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div style="flex: 1; min-width: 40px;" class="nowrap">
                     <div title="Comandos rápidos" class="icono_contextual fondo_amarillo boton_bin" v-on:click="alternar_comandos_rapidos" style="border-radius: 50%;">
                         <span>Bin!</span>
-                    </div>
-                </div>
-                <div class="contenedor_en_panel_superior" style="flex: 100;">
-                    <div class="textbox_contextual nowrap caja_de_ruta_abierta">
-                        <b class="">
-                            {{ nodo_actual }}
-                        </b>
                     </div>
                 </div>
             </div>
@@ -1223,11 +1225,11 @@ Vue.component("open-editor", {
             <span class="status-bar-field">Visualización de instancia de conductometría.</span>
         </template>
     </c-dialog>
-    <div style="position: fixed; top: auto; bottom: 4px; left: 0px; right: auto; z-index: 9999; opacity: 1;" class="nowrap">
+    <!--div style="position: fixed; top: auto; bottom: 4px; left: 0px; right: auto; z-index: 9999; opacity: 1;" class="nowrap">
         <div title="Acceso a procesos" class="icono_contextual fondo_naranja icono_contextual_inferior" style="opacity: 1;" v-on:click="alternar_acceso_a_procesos">
             Process
         </div>
-    </div>
+    </div-->
 </div>`,
   data() {
     return {

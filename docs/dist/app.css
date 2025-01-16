@@ -1035,15 +1035,23 @@ code.hljs {
 
 }
 
-.open-editor button .position_relative {
+.open-editor .position_relative {
     position: relative;
 }
-.open-editor button .position_absolute {
+.open-editor .position_absolute {
     position: absolute;
     top: -9px;
     left: 0;
     right: 0;
     bottom: 0;
+}
+.right_aligned {
+    direction: rtl;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    direction: ltr;
 }
 
 
